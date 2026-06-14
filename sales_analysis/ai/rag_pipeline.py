@@ -317,11 +317,12 @@ class HaystackRAGPipeline:
 
         context = "\n\n".join(context_lines)
         return (
-            "Answer using only the retrieved project context. "
+            "Answer using only the app context, recent chat, and retrieved "
+            "project context provided below. "
             "Keep the answer under 80 words and use no more than 3 bullets. "
             "Do not add a preamble. "
-            "If the context does not contain the answer, say "
-            "\"I don't know from current documents.\" Cite references like "
+            "If those sources do not contain the answer, say "
+            "\"I don't know from current data.\" Cite references like "
             "[1] when using a retrieved chunk.\n\n"
             f"Instructions:\n{instruction_context}\n\n"
             f"Context:\n{context}\n\n"

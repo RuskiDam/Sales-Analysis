@@ -26,6 +26,7 @@ class AIContextBuilder:
         context = self.context_values(inventory_rows, sales_rows)
 
         lines = self.summary_lines(context)
+        lines.extend(self.inventory_product_lines(inventory_rows))
         lines.extend(self.latest_month_lines(context["latest_report"]))
         lines.extend(self.last_two_profit_lines(context["last_two_months"]))
         lines.extend(self.recent_month_lines(context["recent_months"]))
@@ -40,6 +41,9 @@ class AIContextBuilder:
         )
         return {
             "inventory_count": len(inventory_rows),
+            "inventory_quantity": self.inventory_quantity(inventory_rows),
+            "available_products": self.available_products(inventory_rows),
+            "available_quantity": self.available_quantity(inventory_rows),
             "warehouse_value": self.metrics.inventory_value(inventory_rows),
             "items_sold": self.metrics.sold_quantity(sales_rows),
             "total_revenue": self.metrics.sales_revenue(sales_rows),
@@ -59,6 +63,15 @@ class AIContextBuilder:
         return [
             "Business: PC parts retailer.",
             f"Inventory products: {context['inventory_count']:,d}.",
+            (
+                "Inventory quantity remaining: "
+                f"{context['inventory_quantity']:,d} units."
+            ),
+            (
+                "Available inventory: "
+                f"{context['available_quantity']:,d} units across "
+                f"{self.product_count_label(context['available_products'])}."
+            ),
             (
                 "Warehouse value: "
                 f"{DisplayFormatter.money(context['warehouse_value'])}."
@@ -105,6 +118,20 @@ class AIContextBuilder:
             self.latest_percent_line("profit margin", latest_report),
             self.latest_percent_line("MoM revenue growth", latest_report),
         ]
+
+    def inventory_product_lines(self, inventory_rows):
+        if not inventory_rows:
+            return []
+
+        lines = ["Inventory product rows:"]
+        for row in inventory_rows:
+            lines.append(
+                f"- {row['Item']} ({row['Category']}): "
+                f"{row['Quantity']:,d} units, "
+                f"price: {DisplayFormatter.money(row['Price'])}."
+            )
+
+        return lines
 
     @staticmethod
     def last_two_profit_lines(monthly_rows):
@@ -174,3 +201,27 @@ class AIContextBuilder:
 
         value = DisplayFormatter.percent(report[key])
         return f"Latest month {label}: {value}."
+
+    @staticmethod
+    def inventory_quantity(inventory_rows):
+        return sum(row["Quantity"] for row in inventory_rows)
+
+    @staticmethod
+    def available_products(inventory_rows):
+        return sum(1 for row in inventory_rows if row["Available"] == "Y")
+
+    @staticmethod
+    def available_quantity(inventory_rows):
+        return sum(
+            row["Quantity"]
+            for row in inventory_rows
+            if row["Available"] == "Y"
+        )
+
+    @staticmethod
+    def product_count_label(count):
+        label = "product"
+        if count != 1:
+            label = "products"
+
+        return f"{count:,d} {label}"

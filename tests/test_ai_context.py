@@ -6,7 +6,22 @@ from sales_analysis.finance.company_finance import CompanyFinancePolicy
 
 class FakeDataStore:
     def load_inventory_rows(self, path):
-        return []
+        return [
+            {
+                "Category": "CPUs",
+                "Item": "Ryzen 7",
+                "Price": 300.0,
+                "Quantity": 4,
+                "Available": "Y",
+            },
+            {
+                "Category": "GPUs",
+                "Item": "RTX 4070",
+                "Price": 600.0,
+                "Quantity": 2,
+                "Available": "N",
+            },
+        ]
 
     def load_sales_rows(self, path):
         return []
@@ -42,7 +57,7 @@ class FakeMetrics:
         ]
 
     def inventory_value(self, inventory_rows):
-        return 0.0
+        return 2400.0
 
     def sold_quantity(self, sales_rows):
         return 0
@@ -72,6 +87,42 @@ class FakeMetrics:
 
 
 class AIContextBuilderTest(unittest.TestCase):
+    def test_inventory_totals_are_in_context(self):
+        context = AIContextBuilder(
+            FakeDataStore(),
+            FakeMetrics(),
+            CompanyFinancePolicy(),
+        ).build()
+
+        self.assertIn("Inventory products: 2.", context)
+        self.assertIn("Inventory quantity remaining: 6 units.", context)
+        self.assertIn(
+            "Available inventory: 4 units across 1 product.",
+            context,
+        )
+        self.assertIn("Warehouse value: $2,400.00.", context)
+
+    def test_inventory_product_rows_are_in_context(self):
+        context = AIContextBuilder(
+            FakeDataStore(),
+            FakeMetrics(),
+            CompanyFinancePolicy(),
+        ).build()
+
+        self.assertIn("Inventory product rows:", context)
+        self.assertIn(
+            (
+                "Ryzen 7 (CPUs): 4 units, price: $300.00."
+            ),
+            context,
+        )
+        self.assertIn(
+            (
+                "RTX 4070 (GPUs): 2 units, price: $600.00."
+            ),
+            context,
+        )
+
     def test_mom_values_are_in_context(self):
         context = AIContextBuilder(
             FakeDataStore(),
