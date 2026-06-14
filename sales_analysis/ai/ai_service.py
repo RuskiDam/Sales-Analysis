@@ -1,0 +1,52 @@
+from sales_analysis.ai.ai_context import AIContextBuilder
+from sales_analysis.ai.llm_client import LLMClient
+from sales_analysis.ai.rag_pipeline import HaystackRAGPipeline
+from sales_analysis.ai.skill_loader import SkillLoader
+
+
+class AIService:
+    client_error_prefix = "A.I. request failed:"
+
+    def __init__(
+        self,
+        data_store,
+        metrics,
+        finance_policy,
+        llm_client=None,
+        context_builder=None,
+        skill_loader=None,
+        rag_pipeline=None,
+    ):
+        self.llm_client = llm_client
+        self.context_builder = context_builder or AIContextBuilder(
+            data_store,
+            metrics,
+            finance_policy,
+        )
+        self.skill_loader = skill_loader or SkillLoader()
+        self.rag_pipeline = rag_pipeline
+
+    def answer(self, prompt, model):
+        """Validate API readiness, run RAG, and return a display-ready result."""
+
+        client = self.llm_client or LLMClient(model=model)
+        if not client.api_key:
+            raise ValueError("Missing OpenAI API key.")
+
+        try:
+            rag_pipeline = self.rag_pipeline or HaystackRAGPipeline()
+            rag_result = rag_pipeline.answer(
+                prompt,
+                client,
+                self.grounded_prompt(prompt),
+            )
+            return rag_result
+        except ValueError as error:
+            raise ValueError(f"{self.client_error_prefix} {error}") from error
+
+    def grounded_prompt(self, prompt):
+        return (
+            f"SKILL:\n{self.skill_loader.load()}\n\n"
+            f"APP CONTEXT:\n{self.context_builder.build()}\n\n"
+            f"USER QUESTION:\n{prompt}"
+        )

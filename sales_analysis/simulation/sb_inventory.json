@@ -1,0 +1,252 @@
+{
+  "business": "PC parts retailer",
+  "currency": "USD",
+  "price_source": "Newegg search/product listings",
+  "price_checked_date": "2026-06-01",
+  "items": {
+    "case": [
+      {
+        "item": "Corsair FRAME 4000D RS Black ATX Mid Tower",
+        "category": "Case",
+        "model": "CC-9011312-WW",
+        "price": 84.99,
+        "quant": 33,
+        "shipping_cost": 0.0,
+        "status": "available",
+        "source_url": "https://www.newegg.com/p/pl?N=100&d=corsair+4000d"
+      },
+      {
+        "item": "Corsair FRAME 4000D Modular High Airflow Mid-Tower",
+        "category": "Case",
+        "model": "CC-9011343-WW",
+        "price": 134.99,
+        "quant": 0,
+        "shipping_cost": 0.0,
+        "status": "not available",
+        "source_url": "https://www.newegg.com/p/pl?d=corsair++4000d"
+      }
+    ],
+    "gpu": [
+      {
+        "item": "ASUS Dual GeForce RTX 4060 8GB GDDR6",
+        "category": "GPU",
+        "model": "DUAL-RTX4060-O8G-SI",
+        "price": 299.99,
+        "quant": 0,
+        "shipping_cost": 0.0,
+        "status": "not available",
+        "source_url": "https://www.newegg.com/p/pl?N=100006662&d=nvidia+rtx4060+graphics+card"
+      },
+      {
+        "item": "GIGABYTE GeForce RTX 4060 EAGLE OC 8G",
+        "category": "GPU",
+        "model": "GV-N4060EAGLE OC-8GD",
+        "price": 465.59,
+        "quant": 68,
+        "shipping_cost": 0.0,
+        "status": "available",
+        "source_url": "https://www.newegg.com/p/pl?d=nvidia+geforce+rtx+4060+gigabyte"
+      },
+      {
+        "item": "GIGABYTE WINDFORCE GeForce RTX 5080 16GB GDDR7",
+        "category": "GPU",
+        "model": "GV-N5080WF3OC-16GD",
+        "price": 1399.99,
+        "quant": 0,
+        "shipping_cost": 0.0,
+        "status": "not available",
+        "source_url": "https://www.newegg.com/p/pl?d=nvidia+rtx+5080"
+      },
+      {
+        "item": "MSI GeForce RTX 5080 16GB GDDR7 VENTUS 3X OC BLACK",
+        "category": "GPU",
+        "model": "RTX 5080 16G VENTUS 3X OC BLACK",
+        "price": 1499.99,
+        "quant": 0,
+        "shipping_cost": 0.0,
+        "status": "not available",
+        "source_url": "https://www.newegg.com/p/pl?d=nvidia+rtx+5080"
+      },
+      {
+        "item": "GIGABYTE AORUS GeForce RTX 5090 32GB GDDR7",
+        "category": "GPU",
+        "model": "GV-N5090AORUS M-32GD",
+        "price": 4149.99,
+        "quant": 45,
+        "shipping_cost": 0.0,
+        "status": "available",
+        "source_url": "https://www.newegg.com/p/pl?d=rtx+5090"
+      },
+      {
+        "item": "GIGABYTE AORUS GeForce RTX 5090 ICE 32GB GDDR7",
+        "category": "GPU",
+        "model": "GV-N5090AORUSM ICE-32GD",
+        "price": 4149.99,
+        "quant": 85,
+        "shipping_cost": 0.0,
+        "status": "available",
+        "source_url": "https://www.newegg.com/p/pl?d=rtx+5090"
+      },
+      {
+        "item": "NVIDIA GeForce RTX 4090 Founders Edition 24GB GDDR6X",
+        "category": "GPU",
+        "model": "900-1G136-2530-000",
+        "price": 4250.0,
+        "quant": 50,
+        "shipping_cost": 0.0,
+        "status": "available",
+        "source_url": "https://www.newegg.com/p/pl?d=rtx+4090"
+      },
+      {
+        "item": "ASUS TUF Gaming GeForce RTX 4090 OC Edition 24GB GDDR6X",
+        "category": "GPU",
+        "model": "TUF-RTX4090-O24G-GAMING",
+        "price": 3999.0,
+        "quant": 0,
+        "shipping_cost": 0.0,
+        "status": "not available",
+        "source_url": "https://www.newegg.com/p/pl?d=rtx+4090"
+      }
+    ],
+    "motherboard": [
+      {
+        "item": "MSI PRO B650-S WIFI AM5 ATX",
+        "category": "Motherboard",
+        "model": "PRO B650-S WIFI",
+        "price": 139.99,
+        "quant": 0,
+        "shipping_cost": 0.0,
+        "status": "not available",
+        "source_url": "https://www.newegg.com/p/pl?N=100&d=msi+b650+wifi"
+      },
+      {
+        "item": "GIGABYTE B650 AORUS ELITE AX AM5 ATX",
+        "category": "Motherboard",
+        "model": "B650 AORUS ELITE AX",
+        "price": 159.99,
+        "quant": 0,
+        "shipping_cost": 0.0,
+        "status": "not available",
+        "source_url": "https://www.newegg.com/p/pl?N=100007625&d=gigabyte+b650+aorus+elite+ax+amd+b650&isdeptsrh=1"
+      },
+      {
+        "item": "ASUS ROG Strix B650-A Gaming WiFi AM5 ATX",
+        "category": "Motherboard",
+        "model": "ROG STRIX B650-A GAMING WIFI",
+        "price": 149.99,
+        "quant": 0,
+        "shipping_cost": 0.0,
+        "status": "not available",
+        "source_url": "https://www.newegg.com/p/pl?N=100&d=asus+rog+strix+b650-a+gaming"
+      }
+    ],
+    "storage": [
+      {
+        "item": "Western Digital WD_BLACK SN770 1TB NVMe PCIe Gen4",
+        "category": "Storage",
+        "model": "WDS100T3X0E",
+        "price": 75.99,
+        "quant": 63,
+        "shipping_cost": 0.0,
+        "status": "available",
+        "source_url": "https://www.newegg.com/p/pl?d=wd+black+sn770+1tb+ssd"
+      },
+      {
+        "item": "Western Digital WD_BLACK SN770 2TB NVMe PCIe Gen4",
+        "category": "Storage",
+        "model": "WDS200T3X0E",
+        "price": 118.99,
+        "quant": 61,
+        "shipping_cost": 0.0,
+        "status": "available",
+        "source_url": "https://www.newegg.com/p/pl?d=wd+black+sn770+1tb+ssd"
+      }
+    ],
+    "cpu": [
+      {
+        "item": "AMD Ryzen 5 7600 6-Core AM5",
+        "category": "CPU",
+        "model": "100-100001015",
+        "price": 178.69,
+        "quant": 12,
+        "shipping_cost": 0.0,
+        "status": "available",
+        "source_url": "https://www.newegg.com/p/pl?d=amd+ryzen+7600"
+      },
+      {
+        "item": "AMD Ryzen 5 7600 6-Core AM5",
+        "category": "CPU",
+        "model": "100-100001015BOX",
+        "price": 184.99,
+        "quant": 86,
+        "shipping_cost": 0.0,
+        "status": "available",
+        "source_url": "https://www.newegg.com/p/pl?d=amd+r5+7600"
+      },
+      {
+        "item": "AMD Ryzen 9 9900X 12-Core AM5",
+        "category": "CPU",
+        "model": "100-100000662WOF",
+        "price": 370.0,
+        "quant": 0,
+        "shipping_cost": 0.0,
+        "status": "not available",
+        "source_url": "https://www.newegg.com/p/pl?d=9900X"
+      },
+      {
+        "item": "AMD Ryzen 9 9950X 16-Core AM5",
+        "category": "CPU",
+        "model": "100-100001277WOF",
+        "price": 549.0,
+        "quant": 0,
+        "shipping_cost": 0.0,
+        "status": "not available",
+        "source_url": "https://www.newegg.com/p/pl?d=9950x"
+      }
+    ],
+    "psu": [
+      {
+        "item": "CORSAIR RM750e 2025 Fully Modular Low-Noise ATX",
+        "category": "PSU",
+        "model": "CP-9020295-NA",
+        "price": 114.99,
+        "quant": 52,
+        "shipping_cost": 0.0,
+        "status": "available",
+        "source_url": "https://www.newegg.com/p/pl?d=rm750e"
+      },
+      {
+        "item": "CORSAIR RM750e Fully Modular Low-Noise ATX",
+        "category": "PSU",
+        "model": "CP-9020292-NA",
+        "price": 109.99,
+        "quant": 108,
+        "shipping_cost": 0.0,
+        "status": "available",
+        "source_url": "https://www.newegg.com/p/pl?d=rm750e"
+      }
+    ],
+    "cpu_cooler": [
+      {
+        "item": "Cooler Master Hyper 212 3DHP",
+        "category": "CPU Cooler",
+        "model": "RR-S4WW-20PA-R1",
+        "price": 32.99,
+        "quant": 0,
+        "shipping_cost": 0.0,
+        "status": "not available",
+        "source_url": "https://www.newegg.com/p/pl?d=cooler+master+hyper+212"
+      },
+      {
+        "item": "Cooler Master Hyper 212 Black Edition",
+        "category": "CPU Cooler",
+        "model": "RR-212S-20PK-R1",
+        "price": 41.99,
+        "quant": 0,
+        "shipping_cost": 0.0,
+        "status": "not available",
+        "source_url": "https://www.newegg.com/p/pl?d=cooler+master+hyper+212"
+      }
+    ]
+  }
+}
