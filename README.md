@@ -40,6 +40,7 @@ wants to answer questions such as:
   even margin, and net income.
 - Guarded OpenAI chat integration.
 - Predefined RAG corpus loaded from `docs/`.
+- Compact runtime A.I. context built from current simulation data.
 - Retrieved document references shown in A.I. responses.
 - JSONL action logging without storing prompt text.
 - Unit tests for services, metrics, simulation, logging, RAG references, and
@@ -72,6 +73,27 @@ docs/sales_terms.md
 Maintainers can add more corpus sources by placing supported files in `docs/`.
 Users cannot upload files through the web app.
 
+The corpus explains business rules and metric interpretation. The runtime app
+context supplies current computed values from the generated simulation data.
+
+Current corpus responsibilities:
+
+- `ai_skill_spec.md`: A.I. behavior, data access contract, and flow.
+- `business_baselines.md`: profit-margin and MoM-growth baselines.
+- `finance_rules.md`: revenue, expenses, break-even, net income, profit, and
+  loss.
+- `inventory_policy.md`: availability, warehouse value, and simulation inventory.
+- `sales_terms.md`: items sold, orders, monthly revenue, and MoM revenue terms.
+
+Current runtime context includes:
+
+- total revenue, items sold, shipping costs, inventory count, and warehouse value
+- latest month revenue, previous month revenue, MoM revenue change, and MoM
+  revenue growth
+- latest month net income, break-even margin, and profit margin
+- last two months profit/loss status with net income and profit margin
+- recent monthly rows with revenue, net income, and order count
+
 ## Architecture
 
 ```text
@@ -80,8 +102,10 @@ Streamlit UI
 -> sales_analysis/app_pages.py
 -> sales_analysis/data, finance, and simulation modules
 -> A.I. service
+-> Compact runtime context from current simulation data
 -> Guardrails
 -> RAG pipeline
+-> Maintainer corpus from docs/
 -> OpenAI client
 -> Streamlit response with references
 ```
@@ -94,8 +118,8 @@ Main modules:
 - `sales_analysis/data/sales_data.py`: JSON loading, validation, and metrics.
 - `sales_analysis/finance/company_finance.py`: company finance calculations.
 - `sales_analysis/simulation/`: reset baselines and historical sales simulation.
-- `sales_analysis/ai/`: guardrails, RAG, prompt context, skill loading, and LLM
-  client.
+- `sales_analysis/ai/`: guardrails, RAG, compact runtime context, skill loading,
+  and LLM client.
 - `sales_analysis/logging/app_logger.py`: runtime action logging.
 - `tests/`: unit tests.
 
@@ -196,3 +220,5 @@ python -m unittest discover -v
 ```
 
 Expected result: all tests pass.
+
+Current expected suite size: 43 tests.
