@@ -44,7 +44,8 @@ Users can ask the A.I. to:
 - summarize the last two months of profit/loss
 - explain MoM revenue gain or decline
 - explain profit margin movement against the 50% baseline
-- interpret recent monthly rows and inventory totals
+- interpret recent monthly rows, inventory totals, and specific product
+  quantities
 - draft a professional monthly Sales/Fiscal report
 - generate a downloadable MoM PDF/report from current findings
 
@@ -72,9 +73,10 @@ The A.I. cannot:
 - Predefined RAG corpus loaded from `docs/`.
 - Compact runtime A.I. context built from current simulation data.
 - Retrieved document references shown in A.I. responses.
+- Downloadable monthly Sales/Fiscal PDF generation from current findings.
 - JSONL action logging without storing prompt text.
-- Unit tests for services, metrics, simulation, logging, RAG references, and
-  client error handling.
+- Unit tests for services, metrics, simulation, logging, RAG references, PDF
+  reports, and client error handling.
 
 ## RAG Corpus
 
@@ -121,6 +123,8 @@ Current corpus responsibilities:
 Current runtime context includes:
 
 - total revenue, items sold, shipping costs, inventory count, and warehouse value
+- total inventory quantity, available quantity, and specific product rows with
+  product name, category, units remaining, and price
 - latest month revenue, previous month revenue, MoM revenue change, and MoM
   revenue growth
 - latest month net income, break-even margin, and profit margin
@@ -160,6 +164,7 @@ Main modules:
 - `sales_analysis/simulation/`: reset baselines and historical sales simulation.
 - `sales_analysis/ai/`: guardrails, RAG, compact runtime context, skill loading,
   and LLM client.
+- `sales_analysis/reports/monthly_pdf.py`: monthly Sales/Fiscal PDF generation.
 - `sales_analysis/logging/app_logger.py`: runtime action logging.
 - `tests/`: unit tests.
 
@@ -264,4 +269,4 @@ python -m unittest discover -v
 
 Expected result: all tests pass.
 
-Current expected suite size: 43 tests.
+Current expected suite size: 48 tests.
