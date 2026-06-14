@@ -21,7 +21,7 @@ class FakeContextBuilder:
 
 class FakeSkillLoader:
     def load(self):
-        return "Use short sales answers."
+        return "Answer from provided context only."
 
 
 class FakeRAGResult:
@@ -82,7 +82,10 @@ class AIServiceTest(unittest.TestCase):
     def test_prompt_includes_skill(self):
         client = FakeClient()
         self.service(client).answer("What is revenue?", "gpt-5.5")
-        self.assertIn("SKILL:\nUse short sales answers.", client.prompt)
+        self.assertIn(
+            "SKILL:\nAnswer from provided context only.",
+            client.prompt,
+        )
 
     def test_prompt_includes_recent_chat(self):
         chat_history = [
