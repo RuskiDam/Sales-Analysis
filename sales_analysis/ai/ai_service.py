@@ -43,6 +43,11 @@ class AIService:
             return rag_result
         except ValueError as error:
             raise ValueError(f"{self.client_error_prefix} {error}") from error
+        except Exception as error:
+            raise ValueError(
+                f"{self.client_error_prefix} "
+                "RAG retrieval failed while processing the question."
+            ) from error
 
     def grounded_prompt(self, prompt):
         return (

@@ -43,6 +43,11 @@ class FakeRAGPipeline:
         return FakeRAGResult()
 
 
+class BrokenRAGPipeline:
+    def answer(self, question, client, instruction_context=""):
+        raise RuntimeError("haystack runtime failed")
+
+
 class FailingClient:
     api_key = "test-key"
 
@@ -61,7 +66,6 @@ class AIServiceTest(unittest.TestCase):
             skill_loader=FakeSkillLoader(),
             rag_pipeline=FakeRAGPipeline(),
         )
-
 
     def test_answer_returns_result(self):
         result = self.service().answer("What is revenue?", "gpt-5.5")
@@ -129,6 +133,22 @@ class AIServiceTest(unittest.TestCase):
             self.service(FailingClient()).answer("What is revenue?", "gpt-5.5")
 
         self.assertIn("OpenAI request timed out.", str(context.exception))
+
+    def test_pipeline_runtime_error_is_safe(self):
+        service = AIService(
+            data_store=None,
+            metrics=None,
+            finance_policy=None,
+            llm_client=FakeClient(),
+            context_builder=FakeContextBuilder(),
+            skill_loader=FakeSkillLoader(),
+            rag_pipeline=BrokenRAGPipeline(),
+        )
+
+        with self.assertRaises(ValueError) as context:
+            service.answer("Were we losing money?", "gpt-5.5")
+
+        self.assertIn("RAG retrieval failed", str(context.exception))
 
     def test_long_prompt_blocked(self):
         prompt = "x" * (AIGuardrails.max_prompt_chars + 1)
