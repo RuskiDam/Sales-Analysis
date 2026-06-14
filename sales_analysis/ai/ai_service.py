@@ -54,6 +54,12 @@ class AIService:
     def grounded_prompt(self, prompt, chat_history=None):
         return (
             f"SKILL:\n{self.skill_loader.load()}\n\n"
+            "BUSINESS RULES:\n"
+            "- Profit margin baseline is 50%.\n"
+            "- Explain profit margin movement as percentage points above or "
+            "below that baseline.\n"
+            "- Example: 54.98% margin is 4.98 percentage points above "
+            "baseline, about a 5-point lift.\n\n"
             f"APP CONTEXT:\n{self.context_builder.build()}\n\n"
             f"RECENT CHAT:\n{self.chat_context(chat_history)}\n\n"
             f"USER QUESTION:\n{prompt}"

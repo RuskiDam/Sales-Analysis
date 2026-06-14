@@ -1,0 +1,63 @@
+import unittest
+
+from sales_analysis.ai.ai_context import AIContextBuilder
+from sales_analysis.finance.company_finance import CompanyFinancePolicy
+
+
+class FakeDataStore:
+    def load_inventory_rows(self, path):
+        return []
+
+    def load_sales_rows(self, path):
+        return []
+
+
+class FakeMetrics:
+    def monthly_financials(self, sales_rows, finance_policy):
+        return []
+
+    def inventory_value(self, inventory_rows):
+        return 0.0
+
+    def sold_quantity(self, sales_rows):
+        return 0
+
+    def sales_revenue(self, sales_rows):
+        return 0.0
+
+    def shipping_costs(self, sales_rows):
+        return 0.0
+
+    def latest_month_report(self, sales_rows, finance_policy):
+        return {
+            "year": 2026,
+            "month": 6,
+            "profit_margin": 54.98,
+            "revenue_growth": 0.0,
+            "finance": {
+                "net_income": 100.0,
+                "break_even_margin": 50.0,
+            },
+        }
+
+    def month_label(self, year, month):
+        return "June 2026"
+
+
+class AIContextBuilderTest(unittest.TestCase):
+    def test_profit_margin_baseline_delta_is_in_context(self):
+        context = AIContextBuilder(
+            FakeDataStore(),
+            FakeMetrics(),
+            CompanyFinancePolicy(),
+        ).build()
+
+        self.assertIn("Profit margin baseline: 50.00%.", context)
+        self.assertIn(
+            "Latest month profit margin vs baseline: 4.98% percentage points.",
+            context,
+        )
+
+
+if __name__ == "__main__":
+    unittest.main()
