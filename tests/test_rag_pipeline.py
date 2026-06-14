@@ -39,17 +39,22 @@ class RAGResultTest(unittest.TestCase):
         result = RAGResult(
             "What is revenue?",
             "Revenue answer.",
-            [FakeDocument("Revenue comes from sales rows.", "sales_log.json")],
+            [
+                FakeDocument("Revenue comes from sales rows.", "sales_log.json"),
+                FakeDocument("More sales row text.", "sales_log.json"),
+                FakeDocument("Policy text.", "finance_rules.md"),
+            ],
             "Prompt",
         )
 
         references = result.references()
 
-        self.assertEqual(references[0]["reference"], 1)
-        self.assertEqual(references[0]["source"], "sales_log.json")
         self.assertEqual(
-            references[0]["snippet"],
-            "Revenue comes from sales rows.",
+            references,
+            [
+                {"Document": "sales_log.json"},
+                {"Document": "finance_rules.md"},
+            ],
         )
 
 
