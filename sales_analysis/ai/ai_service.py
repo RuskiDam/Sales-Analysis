@@ -52,6 +52,12 @@ class AIService:
             ) from error
 
     def grounded_prompt(self, prompt, chat_history=None):
+        """
+        Construct a grounded prompt with skill definitions, business rules, application context, recent chat history, and the user question.
+        
+        Returns:
+        	prompt (str): Formatted prompt string with all context sections assembled for the LLM.
+        """
         return (
             f"SKILL:\n{self.skill_loader.load()}\n\n"
             "BUSINESS RULES:\n"
