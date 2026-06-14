@@ -8,6 +8,7 @@ from sales_analysis.ai.ai_service import AIService
 from sales_analysis.ai.llm_client import LLMClient
 from sales_analysis.ai.rag_pipeline import HaystackRAGPipeline, RAGCorpus
 from sales_analysis.data.sales_data import DisplayFormatter
+from sales_analysis.reports.monthly_pdf import MonthlyPDFReport
 
 
 @st.dialog("RAG documents")
@@ -19,7 +20,7 @@ def show_rag_documents_dialog(rows):
     st.dataframe(
         pd.DataFrame(rows),
         hide_index=True,
-        use_container_width=True,
+        width="stretch",
     )
 
 
@@ -87,7 +88,7 @@ class BasePage:
         st.dataframe(
             styled_finance,
             hide_index=True,
-            use_container_width=True,
+            width="stretch",
             column_config={
                 "Datatype": st.column_config.TextColumn("Datatype"),
                 "Value": st.column_config.TextColumn("Value"),
@@ -291,11 +292,11 @@ class CalculatorPage(BasePage):
         first_column, second_column = st.columns(2)
 
         with first_column:
-            if st.button("Run 6-month simulation", use_container_width=True):
+            if st.button("Run 6-month simulation", width="stretch"):
                 self.run_historical_simulation(6)
 
         with second_column:
-            if st.button("Run 12-month simulation", use_container_width=True):
+            if st.button("Run 12-month simulation", width="stretch"):
                 self.run_historical_simulation(12)
 
     def run_historical_simulation(self, month_count):
@@ -503,7 +504,7 @@ class InventoryPage(BasePage):
         st.dataframe(
             styled_inventory,
             hide_index=True,
-            use_container_width=True,
+            width="stretch",
             column_config={
                 "Price": st.column_config.TextColumn("Price"),
                 "Quantity": st.column_config.TextColumn("Quantity"),
@@ -686,7 +687,7 @@ class AnalysisPage(BasePage):
                 self.positive_color,
                 self.negative_color,
             ],
-            use_container_width=True,
+            width="stretch",
             y_label="Dollars",
         )
 
@@ -697,7 +698,7 @@ class AnalysisPage(BasePage):
             x="Month",
             y="Shipping Impact",
             color=self.negative_color,
-            use_container_width=True,
+            width="stretch",
             y_label="Dollars",
         )
 
@@ -706,7 +707,7 @@ class AnalysisPage(BasePage):
         st.dataframe(
             self.formatted_monthly_frame(breakdown_frame),
             hide_index=True,
-            use_container_width=True,
+            width="stretch",
         )
 
     @staticmethod
@@ -786,7 +787,7 @@ class AIPage(BasePage):
         with docs_column:
             self.show_rag_document_status()
         with clear_column:
-            if st.button("Clear", use_container_width=True):
+            if st.button("Clear", width="stretch"):
                 st.session_state.ai_messages = []
                 self.action_logger.log("user", "clear_ai_chat")
                 st.rerun()
@@ -806,16 +807,19 @@ class AIPage(BasePage):
         )
 
     def show_ai_chat_history(self):
-        for message in st.session_state.ai_messages:
+        for index, message in enumerate(st.session_state.ai_messages):
             with st.chat_message(message["role"]):
                 st.write(message["content"])
+                report = message.get("report")
+                if report:
+                    self.show_report_download(report, index)
                 references = message.get("references", [])
                 if references:
                     self.show_references(references)
 
     def show_rag_document_status(self):
         rows = self.rag_document_rows()
-        button_pressed = st.button("RAG", use_container_width=True)
+        button_pressed = st.button("RAG", width="stretch")
         if button_pressed:
             show_rag_documents_dialog(rows)
 
@@ -835,7 +839,7 @@ class AIPage(BasePage):
         st.dataframe(
             pd.DataFrame(references),
             hide_index=True,
-            use_container_width=True,
+            width="stretch",
         )
 
     def handle_ai_prompt(self, prompt):
@@ -852,6 +856,8 @@ class AIPage(BasePage):
             with st.spinner("Thinking"):
                 result = self.ai_result(prompt, model, prior_messages)
             st.write(result["answer"])
+            if result.get("report"):
+                self.show_report_download(result["report"], len(prior_messages))
             if result["references"]:
                 self.show_references(result["references"])
 
@@ -859,17 +865,23 @@ class AIPage(BasePage):
             "assistant",
             result["answer"],
             result["references"],
+            result.get("report"),
         )
 
-    def append_ai_message(self, role, content, references=None):
+    def append_ai_message(self, role, content, references=None, report=None):
         message = {"role": role, "content": content}
         if references:
             message["references"] = references
+        if report:
+            message["report"] = report
 
         st.session_state.ai_messages.append(message)
 
     def ai_result(self, prompt, model, chat_history=None):
         """Call A.I. service and log success or safe error details."""
+
+        if self.is_pdf_report_request(prompt):
+            return self.pdf_report_result(prompt, model, chat_history)
 
         try:
             rag_result = AIService(
@@ -893,6 +905,54 @@ class AIPage(BasePage):
             "answer": rag_result.answer,
             "references": rag_result.references(),
         }
+
+    @staticmethod
+    def is_pdf_report_request(prompt):
+        normalized_prompt = prompt.lower()
+        asks_for_file = "pdf" in normalized_prompt or "report" in normalized_prompt
+        asks_for_business_report = any(
+            term in normalized_prompt
+            for term in ("mom", "monthly", "sales", "fiscal")
+        )
+        return asks_for_file and asks_for_business_report
+
+    def pdf_report_result(self, prompt, model, chat_history=None):
+        try:
+            report = MonthlyPDFReport(
+                self.data_store,
+                self.metrics,
+                self.finance_policy,
+            ).build(chat_history)
+        except (FileNotFoundError, json.JSONDecodeError, ValueError) as error:
+            self.log_ai_result("app", model, prompt, "error", str(error))
+            return {"answer": str(error), "references": []}
+
+        self.log_ai_result(
+            "user",
+            model,
+            prompt,
+            "success",
+            message="generated_pdf_report",
+        )
+        return {
+            "answer": (
+                "Generated a monthly Sales/Fiscal PDF report from current "
+                "simulation data and recent chat context."
+            ),
+            "references": [{"Document": "docs/Professional-PDF-Style.md"}],
+            "report": report,
+        }
+
+    @staticmethod
+    def show_report_download(report, index):
+        st.download_button(
+            "Download Monthly Sales/Fiscal PDF",
+            data=report["data"],
+            file_name=report["file_name"],
+            mime=report["mime"],
+            key=f"monthly_pdf_download_{index}",
+            width="stretch",
+        )
 
     def log_ai_result(
         self,
