@@ -46,13 +46,12 @@ Users can ask the A.I. to:
 - explain profit margin movement against the 50% baseline
 - interpret recent monthly rows and inventory totals
 - draft a professional monthly Sales/Fiscal report
-- draft a MoM PDF/report from current findings
+- generate a downloadable MoM PDF/report from current findings
 
 For report-style requests such as `Create a MoM PDF`, the user does not need to
 say `based on chat context`. The A.I. should treat that as a request to use
 current app data, recent chat findings, and corpus rules to produce a monthly
-report draft. If runtime PDF creation is not available, the A.I. should draft
-the report content instead of claiming the request is unknown.
+Sales/Fiscal PDF with a download button.
 
 The A.I. cannot:
 

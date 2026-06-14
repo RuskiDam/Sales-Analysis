@@ -86,9 +86,6 @@ movement against baseline:
 
 ## PDF Creation Rule
 
-If the application supports PDF creation, the A.I. may generate a polished PDF
-report from current app context and recent chat findings.
-
-If PDF creation is not available in the current runtime, the A.I. should say it
-can draft the report content from current data, but cannot create the PDF file
-from the current app.
+The application supports PDF creation for monthly Sales/Fiscal reports. The
+A.I. may generate a polished PDF report from current app context and recent chat
+findings, then expose it through a download button.
