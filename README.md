@@ -130,18 +130,25 @@ Current runtime context includes:
 
 ## Architecture
 
-```text
-Streamlit UI
--> sales_analysis/app.py
--> sales_analysis/app_pages.py
--> sales_analysis/data, finance, and simulation modules
--> A.I. service
--> Compact runtime context from current simulation data
--> Guardrails
--> RAG pipeline
--> Maintainer corpus from docs/
--> OpenAI client
--> Streamlit response with references
+```mermaid
+flowchart TD
+    User[User] --> UI[Streamlit UI]
+    UI --> Pages[Calculator, Inventory, Analysis, A.I. pages]
+
+    Pages --> Data[Simulation JSON and sales data store]
+    Data --> Metrics[Sales and finance metrics]
+    Metrics --> Dashboard[Dashboard tables, charts, and reports]
+
+    Pages --> AI[A.I. service]
+    AI --> Context[Current app context]
+    AI --> Corpus[docs/ corpus]
+    Context --> Prompt[Grounded prompt]
+    Corpus --> Prompt
+    Prompt --> OpenAI[OpenAI API]
+    OpenAI --> Response[A.I. answer and document references]
+    Response --> UI
+
+    Pages --> Logs[JSONL action logs]
 ```
 
 Main modules:
