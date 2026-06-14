@@ -130,18 +130,42 @@ Current runtime context includes:
 
 ## Architecture
 
-```text
-Streamlit UI
--> sales_analysis/app.py
--> sales_analysis/app_pages.py
--> sales_analysis/data, finance, and simulation modules
--> A.I. service
--> Compact runtime context from current simulation data
--> Guardrails
--> RAG pipeline
--> Maintainer corpus from docs/
--> OpenAI client
--> Streamlit response with references
+```mermaid
+flowchart TD
+    User[User] --> UI[Streamlit UI]
+    UI --> App[main.py and sales_analysis/app.py]
+    App --> Pages[sales_analysis/app_pages.py]
+
+    Pages --> Calculator[Calculator Page]
+    Pages --> Inventory[Inventory Page]
+    Pages --> Analysis[Analysis Page]
+    Pages --> AI[A.I. Page]
+
+    Calculator --> Simulation[sales_analysis/simulation]
+    Simulation --> SimFiles[Mutable simulation JSON]
+    SimFiles --> DataStore[sales_analysis/data/sales_data.py]
+
+    Inventory --> DataStore
+    Analysis --> DataStore
+    DataStore --> Metrics[SalesMetrics]
+    Metrics --> Finance[sales_analysis/finance]
+    Finance --> PageOutput[Dashboard metrics, tables, and charts]
+
+    AI --> Guardrails[A.I. guardrails]
+    Guardrails --> AIService[AIService]
+    AIService --> Skill[Fixed sales_analysis_skill.md]
+    AIService --> RuntimeContext[AIContextBuilder current data summary]
+    AIService --> RAG[RAG pipeline]
+    RAG --> Corpus[docs/ maintainer corpus]
+    RuntimeContext --> Prompt[Grounded prompt]
+    Skill --> Prompt
+    Corpus --> Prompt
+    Prompt --> OpenAI[OpenAI chat completion API]
+    OpenAI --> AIResponse[A.I. response with document references]
+    AIResponse --> UI
+
+    AI --> Logger[JSONL action logger]
+    Calculator --> Logger
 ```
 
 Main modules:
