@@ -240,7 +240,7 @@ Streamlit secrets during hosted deployment. The RAG corpus is loaded from
 Public app URL:
 
 ```text
-TBD after deployment
+https://sales-analysis-jilghcy4tsjyph8edxxgzg.streamlit.app
 ```
 
 ## Limitations
