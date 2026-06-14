@@ -132,7 +132,7 @@ class LLMClient:
     def payload(self, prompt):
         return {
             "model": self.model,
-            "max_tokens": self.max_tokens,
+            "max_completion_tokens": self.max_tokens,
             "stream": False,
             "messages": [
                 {

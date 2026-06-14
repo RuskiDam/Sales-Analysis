@@ -78,7 +78,7 @@ class LLMClientTest(unittest.TestCase):
         )
         payload = client.payload("What is revenue?")
         self.assertEqual(payload["model"], self.test_model)
-        self.assertEqual(payload["max_tokens"], client.max_tokens)
+        self.assertEqual(payload["max_completion_tokens"], client.max_tokens)
         self.assertEqual(payload["stream"], False)
         self.assertEqual(payload["messages"][1]["content"], "What is revenue?")
 
