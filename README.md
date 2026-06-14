@@ -133,39 +133,22 @@ Current runtime context includes:
 ```mermaid
 flowchart TD
     User[User] --> UI[Streamlit UI]
-    UI --> App[main.py and sales_analysis/app.py]
-    App --> Pages[sales_analysis/app_pages.py]
+    UI --> Pages[Calculator, Inventory, Analysis, A.I. pages]
 
-    Pages --> Calculator[Calculator Page]
-    Pages --> Inventory[Inventory Page]
-    Pages --> Analysis[Analysis Page]
-    Pages --> AI[A.I. Page]
+    Pages --> Data[Simulation JSON and sales data store]
+    Data --> Metrics[Sales and finance metrics]
+    Metrics --> Dashboard[Dashboard tables, charts, and reports]
 
-    Calculator --> Simulation[sales_analysis/simulation]
-    Simulation --> SimFiles[Mutable simulation JSON]
-    SimFiles --> DataStore[sales_analysis/data/sales_data.py]
-
-    Inventory --> DataStore
-    Analysis --> DataStore
-    DataStore --> Metrics[SalesMetrics]
-    Metrics --> Finance[sales_analysis/finance]
-    Finance --> PageOutput[Dashboard metrics, tables, and charts]
-
-    AI --> Guardrails[A.I. guardrails]
-    Guardrails --> AIService[AIService]
-    AIService --> Skill[Fixed sales_analysis_skill.md]
-    AIService --> RuntimeContext[AIContextBuilder current data summary]
-    AIService --> RAG[RAG pipeline]
-    RAG --> Corpus[docs/ maintainer corpus]
-    RuntimeContext --> Prompt[Grounded prompt]
-    Skill --> Prompt
+    Pages --> AI[A.I. service]
+    AI --> Context[Current app context]
+    AI --> Corpus[docs/ corpus]
+    Context --> Prompt[Grounded prompt]
     Corpus --> Prompt
-    Prompt --> OpenAI[OpenAI chat completion API]
-    OpenAI --> AIResponse[A.I. response with document references]
-    AIResponse --> UI
+    Prompt --> OpenAI[OpenAI API]
+    OpenAI --> Response[A.I. answer and document references]
+    Response --> UI
 
-    AI --> Logger[JSONL action logger]
-    Calculator --> Logger
+    Pages --> Logs[JSONL action logs]
 ```
 
 Main modules:
