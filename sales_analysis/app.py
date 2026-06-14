@@ -17,6 +17,25 @@ from sales_analysis.simulation.simulation_files import SimulationFileManager
 
 
 class StreamlitSalesApp:
+    nav_items = {
+        "calculator": {
+            "label": "Calculator",
+            "icon": ":material/calculate:",
+        },
+        "inventory": {
+            "label": "Inventory",
+            "icon": ":material/inventory_2:",
+        },
+        "graphs": {
+            "label": "Analysis",
+            "icon": ":material/monitoring:",
+        },
+        "ai": {
+            "label": "A.I.",
+            "icon": ":material/smart_toy:",
+        },
+    }
+
     def __init__(self):
         self.simulation_manager = SimulationFileManager()
         self.data_store = SalesDataStore()
@@ -60,10 +79,8 @@ class StreamlitSalesApp:
             st.session_state.section = "calculator"
 
         with st.sidebar:
-            self.show_tab_button("calculator", "🧮\nCalculator")
-            self.show_tab_button("inventory", "📦\nInventory")
-            self.show_tab_button("graphs", "📊\nAnalysis")
-            self.show_tab_button("ai", "🤖\nA.I.")
+            for item_section, item in self.nav_items.items():
+                self.show_tab_button(item_section, item)
 
         return st.session_state.section
 
@@ -71,27 +88,19 @@ class StreamlitSalesApp:
     def set_section(section):
         st.session_state.section = section
 
-    def show_tab_button(self, section, label):
-        """Render one sidebar tab with separate active-state marker styling."""
+    def show_tab_button(self, section, item):
+        """Render one sidebar tab with native Streamlit button icons."""
 
-        marker_column, button_column = st.columns(
-            [0.08, 0.92],
-            gap="small",
+        button_type = "secondary"
+        if st.session_state.section == section:
+            button_type = "primary"
+
+        st.button(
+            item["label"],
+            key=f"{section}_nav_tab",
+            on_click=self.set_section,
+            args=(section,),
+            icon=item["icon"],
+            type=button_type,
+            width="stretch",
         )
-        with marker_column:
-            marker_class = "nav-marker"
-            if st.session_state.section == section:
-                marker_class = "nav-marker nav-marker-active"
-            st.markdown(
-                f'<div class="{marker_class}"></div>',
-                unsafe_allow_html=True,
-            )
-
-        with button_column:
-            st.button(
-                label,
-                key=f"{section}_nav_tab",
-                on_click=self.set_section,
-                args=(section,),
-                use_container_width=True,
-            )

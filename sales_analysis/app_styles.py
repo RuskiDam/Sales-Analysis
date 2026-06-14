@@ -6,14 +6,14 @@ class AppStyles:
         padding-top: 2rem;
     }
     section[data-testid="stSidebar"] {
-        min-width: 260px;
-        width: 260px;
+        min-width: 300px;
+        width: 300px;
     }
     section[data-testid="stSidebar"] > div:first-child {
         position: fixed;
         top: 0;
         bottom: 0;
-        width: 260px;
+        width: 300px;
     }
     div[data-testid="stHorizontalBlock"] {
         gap: 14px;
@@ -24,26 +24,25 @@ class AppStyles:
         line-height: 1.2;
     }
     section[data-testid="stSidebar"] div[data-testid="stButton"] > button {
-        height: 112px;
-        margin-bottom: 10px;
-        min-width: 210px;
-        white-space: pre-line;
-        width: 210px;
+        height: 86px;
+        margin-bottom: 14px;
+        min-width: 250px;
+        width: 250px;
     }
     section[data-testid="stSidebar"] div[data-testid="stButton"] > button p {
-        font-size: 20px;
+        font-size: 24px;
         font-weight: 700;
         line-height: 1.25;
     }
-    .nav-marker {
-        border-radius: 4px;
-        height: 112px;
-        margin-bottom: 10px;
-        min-width: 6px;
-        width: 6px;
-    }
-    .nav-marker-active {
-        background: #0969da;
+    section[data-testid="stSidebar"] div[data-testid="stButton"] > button
+    span[data-testid="stIconMaterial"],
+    section[data-testid="stSidebar"] div[data-testid="stButton"] > button
+    span[class*="material-symbols"] {
+        font-size: 48px;
+        height: 48px;
+        line-height: 48px;
+        margin-right: 25px;
+        width: 48px;
     }
     div[data-testid="stMetricLabel"] p {
         font-size: 0.9rem;
