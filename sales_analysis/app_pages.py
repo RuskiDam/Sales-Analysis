@@ -849,13 +849,14 @@ class AIPage(BasePage):
 
         client = LLMClient()
         model = client.model or ""
+        prior_messages = list(st.session_state.ai_messages)
         self.append_ai_message("user", prompt)
         with st.chat_message("user"):
             st.write(prompt)
 
         with st.chat_message("assistant"):
             with st.spinner("Thinking"):
-                result = self.ai_result(prompt, model)
+                result = self.ai_result(prompt, model, prior_messages)
             st.write(result["answer"])
             if result["references"]:
                 self.show_references(result["references"])
@@ -874,7 +875,7 @@ class AIPage(BasePage):
 
         st.session_state.ai_messages.append(message)
 
-    def ai_result(self, prompt, model):
+    def ai_result(self, prompt, model, chat_history=None):
         """Call A.I. service and log success or safe error details."""
 
         try:
@@ -883,7 +884,7 @@ class AIPage(BasePage):
                 self.metrics,
                 self.finance_policy,
                 rag_pipeline=self.rag_pipeline(),
-            ).answer(prompt, model)
+            ).answer(prompt, model, chat_history)
         except ValueError as error:
             self.log_ai_result("app", model, prompt, "error", str(error))
             return {"answer": str(error), "references": []}

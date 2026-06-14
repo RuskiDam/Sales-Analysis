@@ -35,10 +35,12 @@ class FakeRAGResult:
 class FakeRAGPipeline:
     def __init__(self):
         self.question = ""
+        self.instruction_context = ""
 
     def answer(self, question, client, instruction_context=""):
         AIGuardrails().validate(question)
         self.question = question
+        self.instruction_context = instruction_context
         client.ask(instruction_context)
         return FakeRAGResult()
 
@@ -57,6 +59,7 @@ class FailingClient:
 
 class AIServiceTest(unittest.TestCase):
     def service(self, client=None):
+        self.fake_rag_pipeline = FakeRAGPipeline()
         return AIService(
             data_store=None,
             metrics=None,
@@ -64,7 +67,7 @@ class AIServiceTest(unittest.TestCase):
             llm_client=client or FakeClient(),
             context_builder=FakeContextBuilder(),
             skill_loader=FakeSkillLoader(),
-            rag_pipeline=FakeRAGPipeline(),
+            rag_pipeline=self.fake_rag_pipeline,
         )
 
     def test_answer_returns_result(self):
@@ -80,6 +83,42 @@ class AIServiceTest(unittest.TestCase):
         client = FakeClient()
         self.service(client).answer("What is revenue?", "gpt-5.5")
         self.assertIn("SKILL:\nUse short sales answers.", client.prompt)
+
+    def test_prompt_includes_recent_chat(self):
+        chat_history = [
+            {"role": "user", "content": "Did we profit?"},
+            {
+                "role": "assistant",
+                "content": "Profit margin was 54.98%.",
+            },
+        ]
+        client = FakeClient()
+        self.service(client).answer(
+            "Does that mean near 5%?",
+            "gpt-5.5",
+            chat_history,
+        )
+
+        self.assertIn("RECENT CHAT:", client.prompt)
+        self.assertIn("Profit margin was 54.98%.", client.prompt)
+
+    def test_retrieval_question_stays_current_prompt(self):
+        chat_history = [
+            {
+                "role": "assistant",
+                "content": "Profit margin was 54.98%.",
+            },
+        ]
+        self.service().answer(
+            "Does that mean near 5%?",
+            "gpt-5.5",
+            chat_history,
+        )
+
+        self.assertEqual(
+            self.fake_rag_pipeline.question,
+            "Does that mean near 5%?",
+        )
 
     def test_empty_prompt_blocked(self):
         with self.assertRaises(ValueError):
