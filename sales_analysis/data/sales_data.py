@@ -360,6 +360,7 @@ class SalesMetrics:
             "month": month,
             "current_sales": current_sales,
             "current_revenue": values["current_revenue"],
+            "previous_revenue": values["previous_revenue"],
             "shipping_costs": values["shipping_costs"],
             "finance": values["finance"],
         }

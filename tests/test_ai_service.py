@@ -83,7 +83,7 @@ class AIServiceTest(unittest.TestCase):
         client = FakeClient()
         self.service(client).answer("Does that mean near 5%?", "gpt-5.5")
         self.assertIn("Profit margin baseline is 50%.", client.prompt)
-        self.assertIn("4.98 percentage points above baseline", client.prompt)
+        self.assertIn("which is a 6.06% increase", client.prompt)
 
     def test_prompt_includes_skill(self):
         client = FakeClient()

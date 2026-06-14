@@ -84,8 +84,24 @@ class AIContextBuilder:
         finance = latest_report["finance"]
         profit_margin = latest_report["profit_margin"]
         margin_delta = profit_margin - self.profit_margin_baseline
+        revenue_change = (
+            latest_report["current_revenue"]
+            - latest_report["previous_revenue"]
+        )
         return [
             f"Latest month: {self.latest_month_label(latest_report)}.",
+            (
+                "Latest month revenue: "
+                f"{DisplayFormatter.money(latest_report['current_revenue'])}."
+            ),
+            (
+                "Previous month revenue: "
+                f"{DisplayFormatter.money(latest_report['previous_revenue'])}."
+            ),
+            (
+                "Latest month MoM revenue change: "
+                f"{DisplayFormatter.money(revenue_change)}."
+            ),
             self.latest_money_line("net income", finance),
             self.latest_money_line("break-even margin", finance),
             self.latest_percent_line("profit margin", latest_report),
@@ -93,12 +109,23 @@ class AIContextBuilder:
                 "Profit margin baseline: "
                 f"{DisplayFormatter.percent(self.profit_margin_baseline)}."
             ),
-            (
-                "Latest month profit margin vs baseline: "
-                f"{DisplayFormatter.percent(margin_delta)} percentage points."
-            ),
+            self.profit_margin_baseline_line(margin_delta),
             self.latest_percent_line("MoM revenue growth", latest_report),
         ]
+
+    @staticmethod
+    def profit_margin_baseline_line(margin_delta):
+        direction = "above"
+        movement = "increase"
+        if margin_delta < 0:
+            direction = "below"
+            movement = "decrease"
+
+        delta = DisplayFormatter.percent(abs(margin_delta))
+        return (
+            "Latest month profit margin vs baseline: "
+            f"{delta} {direction} baseline, which is a {delta} {movement}."
+        )
 
     @staticmethod
     def recent_month_lines(recent_months):
