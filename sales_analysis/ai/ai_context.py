@@ -2,8 +2,6 @@ from sales_analysis.data.sales_data import DisplayFormatter
 
 
 class AIContextBuilder:
-    profit_margin_baseline = 50.0
-
     def __init__(
         self,
         data_store,
@@ -84,8 +82,6 @@ class AIContextBuilder:
             return []
 
         finance = latest_report["finance"]
-        profit_margin = latest_report["profit_margin"]
-        margin_delta = profit_margin - self.profit_margin_baseline
         revenue_change = (
             latest_report["current_revenue"]
             - latest_report["previous_revenue"]
@@ -107,27 +103,8 @@ class AIContextBuilder:
             self.latest_money_line("net income", finance),
             self.latest_money_line("break-even margin", finance),
             self.latest_percent_line("profit margin", latest_report),
-            (
-                "Profit margin baseline: "
-                f"{DisplayFormatter.percent(self.profit_margin_baseline)}."
-            ),
-            self.profit_margin_baseline_line(margin_delta),
             self.latest_percent_line("MoM revenue growth", latest_report),
         ]
-
-    @staticmethod
-    def profit_margin_baseline_line(margin_delta):
-        direction = "above"
-        movement = "increase"
-        if margin_delta < 0:
-            direction = "below"
-            movement = "decrease"
-
-        delta = DisplayFormatter.percent(abs(margin_delta))
-        return (
-            "Latest month profit margin vs baseline: "
-            f"{delta} {direction} baseline, which is a {delta} {movement}."
-        )
 
     @staticmethod
     def last_two_profit_lines(monthly_rows):

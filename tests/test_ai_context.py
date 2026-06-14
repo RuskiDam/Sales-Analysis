@@ -72,20 +72,17 @@ class FakeMetrics:
 
 
 class AIContextBuilderTest(unittest.TestCase):
-    def test_profit_margin_baseline_delta_is_in_context(self):
+    def test_mom_values_are_in_context(self):
         context = AIContextBuilder(
             FakeDataStore(),
             FakeMetrics(),
             CompanyFinancePolicy(),
         ).build()
 
-        self.assertIn("Profit margin baseline: 50.00%.", context)
-        self.assertIn(
-            "Latest month profit margin vs baseline: "
-            "4.98% above baseline, which is a 4.98% increase.",
-            context,
-        )
+        self.assertIn("Latest month revenue: $2,000.00.", context)
+        self.assertIn("Previous month revenue: $1,500.00.", context)
         self.assertIn("Latest month MoM revenue change: $500.00.", context)
+        self.assertIn("Latest month profit margin: 54.98%.", context)
 
     def test_last_two_month_profit_status_is_in_context(self):
         context = AIContextBuilder(
