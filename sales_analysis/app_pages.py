@@ -36,20 +36,23 @@ class BasePage:
         self.action_logger = action_logger
 
     def load_sales_rows(self, file_path, label):
-        try:
-            return self.data_store.load_sales_rows(file_path)
-        except FileNotFoundError:
-            st.error(f"Missing {label} file.")
-        except json.JSONDecodeError:
-            st.error(f"{label.title()} file is not valid JSON.")
-        except ValueError as error:
-            st.error(str(error))
-
-        return None
+        return self.load_json_data(
+            self.data_store.load_sales_rows,
+            file_path,
+            label,
+        )
 
     def load_inventory_rows(self, file_path, label):
+        return self.load_json_data(
+            self.data_store.load_inventory_rows,
+            file_path,
+            label,
+        )
+
+    @staticmethod
+    def load_json_data(loader, file_path, label):
         try:
-            return self.data_store.load_inventory_rows(file_path)
+            return loader(file_path)
         except FileNotFoundError:
             st.error(f"Missing {label} file.")
         except json.JSONDecodeError:
@@ -301,18 +304,19 @@ class CalculatorPage(BasePage):
         try:
             summary = self.historical_simulator.run(month_count)
         except FileNotFoundError:
-            message = "Missing simulation inventory or sales file."
-            self.log_simulation_error(month_count, message)
-            st.error(message)
+            self.show_simulation_error(
+                month_count,
+                "Missing simulation inventory or sales file.",
+            )
             return
         except json.JSONDecodeError:
-            message = "Simulation inventory or sales file is not valid JSON."
-            self.log_simulation_error(month_count, message)
-            st.error(message)
+            self.show_simulation_error(
+                month_count,
+                "Simulation inventory or sales file is not valid JSON.",
+            )
             return
         except ValueError as error:
-            self.log_simulation_error(month_count, str(error))
-            st.error(str(error))
+            self.show_simulation_error(month_count, str(error))
             return
 
         self.log_simulation_success(month_count, summary)
@@ -341,6 +345,10 @@ class CalculatorPage(BasePage):
                 f"{DisplayFormatter.money(summary['revenue'])} revenue."
             ),
         )
+
+    def show_simulation_error(self, month_count, message):
+        self.log_simulation_error(month_count, message)
+        st.error(message)
 
     def log_simulation_error(self, month_count, message):
         self.action_logger.log(

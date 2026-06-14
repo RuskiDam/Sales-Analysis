@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from sales_analysis.project_paths import ProjectPaths
 
 
