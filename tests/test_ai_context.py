@@ -87,6 +87,23 @@ class AIContextBuilderTest(unittest.TestCase):
         )
         self.assertIn("Latest month MoM revenue change: $500.00.", context)
 
+    def test_last_two_month_profit_status_is_in_context(self):
+        context = AIContextBuilder(
+            FakeDataStore(),
+            FakeMetrics(),
+            CompanyFinancePolicy(),
+        ).build()
+
+        self.assertIn("Last two months profit/loss:", context)
+        self.assertIn(
+            "May 2026: profit, net income $200.00, profit margin 13.33%.",
+            context,
+        )
+        self.assertIn(
+            "June 2026: profit, net income $400.00, profit margin 20.00%.",
+            context,
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -29,6 +29,7 @@ class AIContextBuilder:
 
         lines = self.summary_lines(context)
         lines.extend(self.latest_month_lines(context["latest_report"]))
+        lines.extend(self.last_two_profit_lines(context["last_two_months"]))
         lines.extend(self.recent_month_lines(context["recent_months"]))
         return "\n".join(lines)
 
@@ -50,6 +51,7 @@ class AIContextBuilder:
                 sales_rows,
                 self.finance_policy,
             ),
+            "last_two_months": monthly_rows[-2:],
             "recent_months": monthly_rows[-3:],
         }
 
@@ -126,6 +128,29 @@ class AIContextBuilder:
             "Latest month profit margin vs baseline: "
             f"{delta} {direction} baseline, which is a {delta} {movement}."
         )
+
+    @staticmethod
+    def last_two_profit_lines(monthly_rows):
+        if not monthly_rows:
+            return []
+
+        lines = ["Last two months profit/loss:"]
+        for row in monthly_rows:
+            profit_margin = 0.0
+            if row["Revenue"]:
+                profit_margin = row["Profit"] / row["Revenue"] * 100
+
+            status = "profit"
+            if row["Profit"] < 0:
+                status = "loss"
+
+            lines.append(
+                f"- {row['Month']}: {status}, "
+                f"net income {DisplayFormatter.money(row['Profit'])}, "
+                f"profit margin {DisplayFormatter.percent(profit_margin)}."
+            )
+
+        return lines
 
     @staticmethod
     def recent_month_lines(recent_months):

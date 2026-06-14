@@ -56,6 +56,7 @@ Current app context includes:
 - profit margin baseline
 - latest month profit margin movement against baseline
 - latest month MoM revenue growth
+- last two months profit/loss status with net income and profit margin
 - recent monthly rows with month, revenue, net income, and order count
 
 Use these values when users ask about sales, profit, loss, growth, inventory,
@@ -80,6 +81,8 @@ answer.
 
 When users ask for MoM revenue gain, use latest month revenue, previous month
 revenue, explicit MoM revenue change, and MoM revenue growth from app context.
+When users ask whether the last two months had profit or loss, answer from the
+`Last two months profit/loss` lines and include net income plus profit margin.
 
 ## Files
 
