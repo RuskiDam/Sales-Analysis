@@ -59,8 +59,7 @@ class BasePage:
 
         return None
 
-    @staticmethod
-    def show_metric_grid(metrics, columns_per_row=3):
+    def show_metric_grid(self, metrics, columns_per_row=3):
         for start in range(0, len(metrics), columns_per_row):
             columns = st.columns(columns_per_row)
             row_metrics = metrics[start:start + columns_per_row]
@@ -74,13 +73,12 @@ class BasePage:
                         border=True,
                     )
 
-    @staticmethod
-    def show_finance_sheet(finance):
+    def show_finance_sheet(self, finance):
         """Render company deductions with status styling for financial health."""
 
         st.subheader("Company Deductions")
-        styled_finance = BasePage.finance_frame(finance).style.map(
-            BasePage.status_style,
+        styled_finance = self.finance_frame(finance).style.map(
+            self.status_style,
             subset=["Status"],
         )
         st.dataframe(
@@ -94,16 +92,14 @@ class BasePage:
             },
         )
 
-    @staticmethod
-    def finance_frame(finance):
-        rows = BasePage.finance_rows(finance)
+    def finance_frame(self, finance):
+        rows = self.finance_rows(finance)
         frame = pd.DataFrame(rows, columns=["Datatype", "Value", "Status"])
         frame = frame.round(2)
         frame["Value"] = frame["Value"].map(DisplayFormatter.money)
         return frame
 
-    @staticmethod
-    def finance_rows(finance):
+    def finance_rows(self, finance):
         return [
             ("Staff Payroll", finance["staff_payroll"], "↓ Negative"),
             ("Health Insurance", finance["health_insurance"], "↓ Negative"),
@@ -112,15 +108,14 @@ class BasePage:
             (
                 "Net Income",
                 finance["net_income"],
-                BasePage.status_label(
+                self.status_label(
                     finance["net_income"],
                     finance["break_even_margin"],
                 ),
             ),
         ]
 
-    @staticmethod
-    def status_label(value, target):
+    def status_label(self, value, target):
         if value > target:
             return "↑ Positive"
 
@@ -129,8 +124,7 @@ class BasePage:
 
         return "= Neutral"
 
-    @staticmethod
-    def status_style(value):
+    def status_style(self, value):
         if value.startswith("↑"):
             return (
                 "background-color: #dafbe1; color: #116329; "
@@ -151,15 +145,13 @@ class BasePage:
 
         return ""
 
-    @staticmethod
-    def delta_color(value, target):
+    def delta_color(self, value, target):
         if value == target:
             return "off"
 
         return "normal"
 
-    @staticmethod
-    def signed_delta(value, target, formatter=DisplayFormatter.percent):
+    def signed_delta(self, value, target, formatter=DisplayFormatter.percent):
         if value == target:
             return "= Neutral"
 
@@ -169,8 +161,7 @@ class BasePage:
 
         return formatter(difference)
 
-    @staticmethod
-    def shipping_delta(value):
+    def shipping_delta(self, value):
         if value == 0:
             return "= Neutral"
 
@@ -792,13 +783,11 @@ class AIPage(BasePage):
                 self.action_logger.log("user", "clear_ai_chat")
                 st.rerun()
 
-    @staticmethod
-    def ensure_ai_messages():
+    def ensure_ai_messages(self):
         if "ai_messages" not in st.session_state:
             st.session_state.ai_messages = []
 
-    @staticmethod
-    def show_ai_empty_state():
+    def show_ai_empty_state(self):
         st.markdown(
             """
             <div class="ai-empty-state">
@@ -808,18 +797,16 @@ class AIPage(BasePage):
             unsafe_allow_html=True,
         )
 
-    @staticmethod
-    def show_ai_chat_history():
+    def show_ai_chat_history(self):
         for message in st.session_state.ai_messages:
             with st.chat_message(message["role"]):
                 st.write(message["content"])
                 references = message.get("references", [])
                 if references:
-                    AIPage.show_references(references)
+                    self.show_references(references)
 
-    @staticmethod
-    def show_rag_document_status():
-        rows = AIPage.rag_document_rows()
+    def show_rag_document_status(self):
+        rows = self.rag_document_rows()
         button_pressed = st.button("RAG", use_container_width=True)
         if button_pressed:
             show_rag_documents_dialog(rows)
@@ -835,8 +822,7 @@ class AIPage(BasePage):
             for source in RAGCorpus().sources()
         ]
 
-    @staticmethod
-    def show_references(references):
+    def show_references(self, references):
         st.caption("References")
         st.dataframe(
             pd.DataFrame(references),
@@ -867,8 +853,7 @@ class AIPage(BasePage):
             result["references"],
         )
 
-    @staticmethod
-    def append_ai_message(role, content, references=None):
+    def append_ai_message(self, role, content, references=None):
         message = {"role": role, "content": content}
         if references:
             message["references"] = references

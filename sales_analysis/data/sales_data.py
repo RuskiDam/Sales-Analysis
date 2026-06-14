@@ -88,8 +88,7 @@ class SalesDataStore:
             for product in InventoryCatalog(data).products()
         ]
 
-    @staticmethod
-    def inventory_row(product):
+    def inventory_row(self, product):
         return {
             "Category": product["category"],
             "Item": product["item"],
@@ -98,30 +97,26 @@ class SalesDataStore:
             "Available": DisplayFormatter.availability(product["status"]),
         }
 
-    @staticmethod
-    def load_inventory_data(file_path):
+    def load_inventory_data(self, file_path):
         data = json.loads(ProjectPaths.resolve(file_path).read_text())
-        SalesDataStore.validate_inventory_data(data)
+        self.validate_inventory_data(data)
         return data
 
-    @staticmethod
-    def save_inventory_data(file_path, data):
-        SalesDataStore.validate_inventory_data(data)
+    def save_inventory_data(self, file_path, data):
+        self.validate_inventory_data(data)
         ProjectPaths.resolve(file_path).write_text(
-            json.dumps(data, indent=SalesDataStore.json_indent) + "\n"
+            json.dumps(data, indent=self.json_indent) + "\n"
         )
 
-    @staticmethod
-    def load_sales_rows(file_path):
+    def load_sales_rows(self, file_path):
         rows = json.loads(ProjectPaths.resolve(file_path).read_text())
-        SalesDataStore.validate_sales_rows(rows)
+        self.validate_sales_rows(rows)
         return rows
 
-    @staticmethod
-    def save_sales_rows(file_path, rows):
-        SalesDataStore.validate_sales_rows(rows)
+    def save_sales_rows(self, file_path, rows):
+        self.validate_sales_rows(rows)
         ProjectPaths.resolve(file_path).write_text(
-            json.dumps(rows, indent=SalesDataStore.json_indent) + "\n"
+            json.dumps(rows, indent=self.json_indent) + "\n"
         )
 
     @classmethod
@@ -200,22 +195,22 @@ class SalesMetrics:
     def shipping_costs(sales_rows):
         return sum(row["shipping_cost"] for row in sales_rows)
 
-    @staticmethod
-    def profit_margin(profit, revenue):
+    @classmethod
+    def profit_margin(cls, profit, revenue):
         if revenue == 0:
             return 0.0
 
-        return (profit / revenue) * SalesMetrics.percent_multiplier
+        return (profit / revenue) * cls.percent_multiplier
 
-    @staticmethod
-    def mom_revenue_growth(current_revenue, previous_revenue):
+    @classmethod
+    def mom_revenue_growth(cls, current_revenue, previous_revenue):
         if previous_revenue == 0:
             return 0.0
 
         return (
             (current_revenue - previous_revenue)
             / previous_revenue
-            * SalesMetrics.percent_multiplier
+            * cls.percent_multiplier
         )
 
     @staticmethod
@@ -360,6 +355,7 @@ class SalesMetrics:
             "month": month,
             "current_sales": current_sales,
             "current_revenue": values["current_revenue"],
+            "previous_revenue": values["previous_revenue"],
             "shipping_costs": values["shipping_costs"],
             "finance": values["finance"],
         }

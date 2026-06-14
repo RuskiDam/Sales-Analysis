@@ -32,6 +32,8 @@ class FakeMetrics:
         return {
             "year": 2026,
             "month": 6,
+            "current_revenue": 2000.0,
+            "previous_revenue": 1500.0,
             "profit_margin": 54.98,
             "revenue_growth": 0.0,
             "finance": {
@@ -54,9 +56,11 @@ class AIContextBuilderTest(unittest.TestCase):
 
         self.assertIn("Profit margin baseline: 50.00%.", context)
         self.assertIn(
-            "Latest month profit margin vs baseline: 4.98% percentage points.",
+            "Latest month profit margin vs baseline: "
+            "4.98% above baseline, which is a 4.98% increase.",
             context,
         )
+        self.assertIn("Latest month MoM revenue change: $500.00.", context)
 
 
 if __name__ == "__main__":

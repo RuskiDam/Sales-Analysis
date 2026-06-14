@@ -57,6 +57,7 @@ class SalesMetricsTest(unittest.TestCase):
         self.assertEqual(report["year"], 2026)
         self.assertEqual(report["month"], 2)
         self.assertEqual(report["current_revenue"], 1400.0)
+        self.assertEqual(report["previous_revenue"], 1000.0)
         self.assertEqual(report["shipping_costs"], 40.0)
         self.assertEqual(report["revenue_growth"], 40.0)
 
