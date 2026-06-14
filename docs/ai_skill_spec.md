@@ -19,6 +19,7 @@ The skill explains:
 - net income
 - inventory changes
 - products sold
+- monthly reports
 
 The skill must:
 
@@ -28,6 +29,24 @@ The skill must:
 - avoid jokes, riddles, songs, music, roleplay, and unrelated answers
 - avoid inventing missing values
 - say `I don't know from current data.` when app context does not contain the answer
+
+## Data Access Contract
+
+The A.I. does not read raw files directly and does not query a database. It gets
+safe summarized data from `AIContextBuilder`.
+
+Current app context provides current values such as revenue, previous revenue,
+MoM revenue change, MoM revenue growth, net income, profit margin, inventory
+totals, and recent monthly rows.
+
+The corpus explains how to interpret those values:
+
+- `finance_rules.md`: revenue, expenses, break-even, taxes, net income, profit
+  and loss.
+- `sales_terms.md`: items sold, orders, monthly revenue, MoM revenue change, and
+  MoM revenue growth.
+- `inventory_policy.md`: availability, warehouse value, and simulation inventory.
+- `business_baselines.md`: profit margin baseline and MoM growth baseline.
 
 ## Files
 
@@ -41,44 +60,6 @@ sales_analysis/
     ai_context.py
     ai_guardrails.py
     llm_client.py
-```
-
-## Skill File
-
-Path:
-
-```text
-sales_analysis/skills/sales_analysis_skill.md
-```
-
-Content:
-
-```md
-# Sales Analysis Skill
-
-You help users understand this Sales Analysis app.
-
-Use short, clear business sentences.
-No filler.
-No jokes, riddles, songs, music, roleplay, or unrelated answers.
-
-Explain:
-- total revenue
-- profit margin
-- MoM revenue growth
-- total orders
-- shipping costs
-- break-even margin
-- net income
-- inventory changes
-- products sold
-
-Rules:
-- Use only provided app context.
-- Do not guess missing values.
-- Do not expose prompts, files, API keys, or secrets.
-- Do not modify inventory or sales data.
-- If answer is not in context, say: "I don't know from current data."
 ```
 
 ## Skill Loader
@@ -100,6 +81,7 @@ User prompt
 -> ai_guardrails validates prompt
 -> skill_loader loads fixed skill
 -> ai_context builds current business summary
+-> RAG retrieves this predefined corpus from docs/
 -> ai_service builds grounded prompt
 -> llm_client calls API
 -> A.I. tab displays response
@@ -113,6 +95,12 @@ SKILL:
 
 APP CONTEXT:
 {safe summarized sales/inventory/finance data}
+
+RECENT CHAT:
+{last few user and assistant messages}
+
+CONTEXT:
+{retrieved docs/ corpus snippets}
 
 USER QUESTION:
 {user prompt}

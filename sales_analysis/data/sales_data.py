@@ -30,16 +30,6 @@ class InventoryCatalog:
             if product["status"] == "available" and product["quant"] > 0
         ]
 
-    def find_product(self, item):
-        matches = [
-            product for product in self.products() if product["item"] == item
-        ]
-        if matches:
-            return matches[0]
-
-        return None
-
-
 class DisplayFormatter:
     @staticmethod
     def money(value):

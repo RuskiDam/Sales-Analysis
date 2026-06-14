@@ -13,7 +13,27 @@ class RAGResultTest(unittest.TestCase):
     def test_default_source(self):
         sources = [row["source"] for row in RAGCorpus().sources()]
 
-        self.assertEqual(sources, ["docs/ai_skill_spec.md"])
+        self.assertEqual(
+            sources,
+            [
+                "docs/ai_skill_spec.md",
+                "docs/business_baselines.md",
+                "docs/finance_rules.md",
+                "docs/inventory_policy.md",
+                "docs/sales_terms.md",
+            ],
+        )
+
+    def test_default_corpus_explains_data_access(self):
+        documents = RAGCorpus().documents()
+        content = "\n".join(document["content"] for document in documents)
+
+        self.assertIn("Data Access Contract", content)
+        self.assertIn("latest month revenue", content)
+        self.assertIn("MoM revenue change", content)
+        self.assertIn("last two months profit/loss", content)
+        self.assertIn("Profit Margin Baseline", content)
+        self.assertIn("Net Income", content)
 
     def test_references(self):
         result = RAGResult(

@@ -14,7 +14,32 @@ class FakeDataStore:
 
 class FakeMetrics:
     def monthly_financials(self, sales_rows, finance_policy):
-        return []
+        return [
+            {
+                "Month": "May 2026",
+                "Revenue": 1500.0,
+                "Profit": 200.0,
+                "Gross Profit": 1400.0,
+                "Shipping Costs": 100.0,
+                "Staff Payroll": 700.0,
+                "Health Insurance": 200.0,
+                "Break Even Margin": 1000.0,
+                "Taxes": 50.0,
+                "Orders": 10,
+            },
+            {
+                "Month": "June 2026",
+                "Revenue": 2000.0,
+                "Profit": 400.0,
+                "Gross Profit": 1900.0,
+                "Shipping Costs": 100.0,
+                "Staff Payroll": 700.0,
+                "Health Insurance": 200.0,
+                "Break Even Margin": 1000.0,
+                "Taxes": 100.0,
+                "Orders": 12,
+            },
+        ]
 
     def inventory_value(self, inventory_rows):
         return 0.0
@@ -47,20 +72,34 @@ class FakeMetrics:
 
 
 class AIContextBuilderTest(unittest.TestCase):
-    def test_profit_margin_baseline_delta_is_in_context(self):
+    def test_mom_values_are_in_context(self):
         context = AIContextBuilder(
             FakeDataStore(),
             FakeMetrics(),
             CompanyFinancePolicy(),
         ).build()
 
-        self.assertIn("Profit margin baseline: 50.00%.", context)
+        self.assertIn("Latest month revenue: $2,000.00.", context)
+        self.assertIn("Previous month revenue: $1,500.00.", context)
+        self.assertIn("Latest month MoM revenue change: $500.00.", context)
+        self.assertIn("Latest month profit margin: 54.98%.", context)
+
+    def test_last_two_month_profit_status_is_in_context(self):
+        context = AIContextBuilder(
+            FakeDataStore(),
+            FakeMetrics(),
+            CompanyFinancePolicy(),
+        ).build()
+
+        self.assertIn("Last two months profit/loss:", context)
         self.assertIn(
-            "Latest month profit margin vs baseline: "
-            "4.98% above baseline, which is a 4.98% increase.",
+            "May 2026: profit, net income $200.00, profit margin 13.33%.",
             context,
         )
-        self.assertIn("Latest month MoM revenue change: $500.00.", context)
+        self.assertIn(
+            "June 2026: profit, net income $400.00, profit margin 20.00%.",
+            context,
+        )
 
 
 if __name__ == "__main__":
