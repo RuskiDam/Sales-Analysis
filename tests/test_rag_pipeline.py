@@ -15,6 +15,14 @@ class RAGResultTest(unittest.TestCase):
 
         self.assertEqual(sources, ["docs/ai_skill_spec.md"])
 
+    def test_default_corpus_explains_data_access(self):
+        documents = RAGCorpus().documents()
+        content = documents[0]["content"]
+
+        self.assertIn("Data Access Contract", content)
+        self.assertIn("latest month revenue", content)
+        self.assertIn("MoM revenue change", content)
+
     def test_references(self):
         result = RAGResult(
             "What is revenue?",
