@@ -1,6 +1,5 @@
 import importlib
 import json
-import re
 
 from sales_analysis.ai.ai_guardrails import GuardrailComponentFactory
 from sales_analysis.project_paths import ProjectPaths
@@ -174,24 +173,19 @@ class RAGResult:
         self.prompt = prompt
 
     def references(self):
-        """Convert retrieved documents into compact rows for chat citations."""
+        """Return referenced document names without exposing retrieved text."""
 
         rows = []
-        for index, document in enumerate(self.documents, start=1):
-            rows.append(
-                {
-                    "reference": index,
-                    "source": document.meta.get("source", "Unknown"),
-                    "snippet": self.clean_snippet(document.content),
-                }
-            )
+        seen_sources = set()
+        for document in self.documents:
+            source = document.meta.get("source", "Unknown")
+            if source in seen_sources:
+                continue
+
+            seen_sources.add(source)
+            rows.append({"Document": source})
 
         return rows
-
-    @staticmethod
-    def clean_snippet(content):
-        snippet = re.sub(r"\s+", " ", content).strip()
-        return snippet[:280]
 
 
 class HaystackRAGPipeline:
