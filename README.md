@@ -57,6 +57,10 @@ At submission time, the corpus contains:
 
 ```text
 docs/ai_skill_spec.md
+docs/business_baselines.md
+docs/finance_rules.md
+docs/inventory_policy.md
+docs/sales_terms.md
 ```
 
 `RAGCorpus` scans `docs/` for supported files:
@@ -165,8 +169,8 @@ OPENAI_MAX_TOKENS = "1200"
 
 The app reads OpenAI settings from `.env` during local development and from
 Streamlit secrets during hosted deployment. The RAG corpus is loaded from
-`docs/`, so the hosted app will include `docs/ai_skill_spec.md` and any
-additional maintainer-added corpus files committed under `docs/`.
+`docs/`, so the hosted app will include all committed corpus files under
+`docs/`.
 
 Public app URL:
 

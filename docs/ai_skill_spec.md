@@ -35,54 +35,18 @@ The skill must:
 The A.I. does not read raw files directly and does not query a database. It gets
 safe summarized data from `AIContextBuilder`.
 
-Current app context includes:
+Current app context provides current values such as revenue, previous revenue,
+MoM revenue change, MoM revenue growth, net income, profit margin, inventory
+totals, and recent monthly rows.
 
-- business type
-- inventory product count
-- warehouse value
-- total items sold
-- total revenue
-- total shipping costs
-- tax rate
-- staff count and hourly wage
-- health insurance cost per staff member
-- latest month label
-- latest month revenue
-- previous month revenue
-- latest month MoM revenue change
-- latest month net income
-- latest month break-even margin
-- latest month profit margin
-- profit margin baseline
-- latest month profit margin movement against baseline
-- latest month MoM revenue growth
-- last two months profit/loss status with net income and profit margin
-- recent monthly rows with month, revenue, net income, and order count
+The corpus explains how to interpret those values:
 
-Use these values when users ask about sales, profit, loss, growth, inventory,
-shipping, or monthly performance.
-
-## Metric Meanings
-
-- Total revenue: sum of sales row revenue.
-- Items sold: sum of sales row quantities.
-- Shipping costs: sum of company shipping costs.
-- Net income: revenue after shipping, payroll, health insurance, and taxes.
-- Break-even margin: operating expenses plus shipping costs.
-- Profit margin: net income divided by revenue, shown as a percent.
-- Profit margin baseline: `50%`.
-- Profit margin movement: compare profit margin against the 50% baseline.
-- MoM revenue change: latest month revenue minus previous month revenue.
-- MoM revenue growth: MoM revenue change divided by previous month revenue.
-
-When the latest profit margin is `56.06%`, explain it as `6.06% above baseline,
-which is a 6.06% increase.` Do not call it `6.06 percentage points` in the user
-answer.
-
-When users ask for MoM revenue gain, use latest month revenue, previous month
-revenue, explicit MoM revenue change, and MoM revenue growth from app context.
-When users ask whether the last two months had profit or loss, answer from the
-`Last two months profit/loss` lines and include net income plus profit margin.
+- `finance_rules.md`: revenue, expenses, break-even, taxes, net income, profit
+  and loss.
+- `sales_terms.md`: items sold, orders, monthly revenue, MoM revenue change, and
+  MoM revenue growth.
+- `inventory_policy.md`: availability, warehouse value, and simulation inventory.
+- `business_baselines.md`: profit margin baseline and MoM growth baseline.
 
 ## Files
 
