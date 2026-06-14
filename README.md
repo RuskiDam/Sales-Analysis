@@ -209,6 +209,9 @@ TBD after deployment
   documents.
 - The in-memory RAG index rebuilds when the app resource cache is reset or the
   app redeploys.
+- After changing chatbot behavior, clear the Streamlit cache, then open
+  **Calculator** and click **Reset** so chat state and simulation data refresh
+  together.
 - The app is not designed for multi-user persistent accounts.
 
 ## Verification Status
