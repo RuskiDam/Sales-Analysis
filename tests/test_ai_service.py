@@ -112,6 +112,11 @@ class AIServiceTest(unittest.TestCase):
             with self.assertRaises(ValueError):
                 self.service().answer(prompt, "gpt-5.5")
 
+    def test_losing_money_question_allowed(self):
+        result = self.service().answer("Were we losing money?", "gpt-5.5")
+
+        self.assertEqual(result.answer, "Grounded answer.")
+
     def test_missing_key_blocked(self):
         with self.assertRaises(ValueError):
             self.service(FakeClient(api_key="")).answer(

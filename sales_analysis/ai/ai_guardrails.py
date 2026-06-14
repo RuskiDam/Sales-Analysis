@@ -1,3 +1,6 @@
+import re
+
+
 class AIGuardrails:
     max_prompt_chars = 1000
     blocked_phrase_groups = {
@@ -91,12 +94,21 @@ class AIGuardrails:
         lowered_prompt = prompt.lower()
         for group_name, phrases in cls.blocked_phrase_groups.items():
             matches = [
-                phrase for phrase in phrases if phrase in lowered_prompt
+                phrase for phrase in phrases
+                if cls.phrase_matches(phrase, lowered_prompt)
             ]
             if matches:
                 return group_name.replace("_", " ")
 
         return ""
+
+    @staticmethod
+    def phrase_matches(phrase, prompt):
+        if re.fullmatch(r"[a-z0-9 ]+", phrase):
+            pattern = rf"\b{re.escape(phrase)}\b"
+            return bool(re.search(pattern, prompt))
+
+        return phrase in prompt
 
 
 class GuardrailDependencyLoader:

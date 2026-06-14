@@ -266,12 +266,18 @@ class HaystackRAGPipeline:
     def retrieve(self, question):
         self.index()
         pipeline = self.query_pipeline()
-        result = pipeline.run(
-            {
-                "guardrails": {"prompt": question},
-                "retriever": {"top_k": self.top_k},
-            }
-        )
+        try:
+            result = pipeline.run(
+                {
+                    "guardrails": {"prompt": question},
+                    "retriever": {"top_k": self.top_k},
+                }
+            )
+        except Exception as error:
+            raise ValueError(
+                "RAG retrieval failed while processing the question."
+            ) from error
+
         return result["retriever"]["documents"]
 
     def query_pipeline(self):
