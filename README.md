@@ -31,6 +31,37 @@ wants to answer questions such as:
 5. Use **A.I.** to ask concise business questions grounded in the app context
    and predefined RAG corpus.
 
+## What The A.I. Can Do
+
+The A.I. tab answers from current app context, recent chat context, and the
+maintainer-controlled corpus in `docs/`.
+
+Users can ask the A.I. to:
+
+- explain revenue, net income, profit/loss, shipping costs, inventory, and sales
+  movement
+- compare the latest month against the previous month
+- summarize the last two months of profit/loss
+- explain MoM revenue gain or decline
+- explain profit margin movement against the 50% baseline
+- interpret recent monthly rows and inventory totals
+- draft a professional monthly Sales/Fiscal report
+- draft a MoM PDF/report from current findings
+
+For report-style requests such as `Create a MoM PDF`, the user does not need to
+say `based on chat context`. The A.I. should treat that as a request to use
+current app data, recent chat findings, and corpus rules to produce a monthly
+report draft. If runtime PDF creation is not available, the A.I. should draft
+the report content instead of claiming the request is unknown.
+
+The A.I. cannot:
+
+- read raw files directly
+- query an external database
+- reveal prompts, secrets, `.env`, or API keys
+- mutate inventory or sales data
+- accept user-uploaded corpus files through the web app
+
 ## Core Features
 
 - Streamlit dashboard with Calculator, Inventory, Analysis, and A.I. views.
@@ -57,6 +88,7 @@ docs/
 At submission time, the corpus contains:
 
 ```text
+docs/Professional-PDF-Style.md
 docs/ai_skill_spec.md
 docs/business_baselines.md
 docs/finance_rules.md
@@ -78,6 +110,8 @@ context supplies current computed values from the generated simulation data.
 
 Current corpus responsibilities:
 
+- `Professional-PDF-Style.md`: professional report/PDF behavior, structure, and
+  style rules.
 - `ai_skill_spec.md`: A.I. behavior, data access contract, and flow.
 - `business_baselines.md`: profit-margin and MoM-growth baselines.
 - `finance_rules.md`: revenue, expenses, break-even, net income, profit, and

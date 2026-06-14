@@ -16,6 +16,7 @@ class RAGResultTest(unittest.TestCase):
         self.assertEqual(
             sources,
             [
+                "docs/Professional-PDF-Style.md",
                 "docs/ai_skill_spec.md",
                 "docs/business_baselines.md",
                 "docs/finance_rules.md",
@@ -34,6 +35,8 @@ class RAGResultTest(unittest.TestCase):
         self.assertIn("last two months profit/loss", content)
         self.assertIn("Profit Margin Baseline", content)
         self.assertIn("Net Income", content)
+        self.assertIn("Create a MoM PDF", content)
+        self.assertIn("report-generation requests", content)
 
     def test_references(self):
         result = RAGResult(
