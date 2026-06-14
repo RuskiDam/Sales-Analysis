@@ -29,7 +29,6 @@ class AIContextBuilder:
 
         lines = self.summary_lines(context)
         lines.extend(self.latest_month_lines(context["latest_report"]))
-        lines.extend(self.last_two_month_lines(context["last_two_months"]))
         lines.extend(self.recent_month_lines(context["recent_months"]))
         return "\n".join(lines)
 
@@ -51,7 +50,6 @@ class AIContextBuilder:
                 sales_rows,
                 self.finance_policy,
             ),
-            "last_two_months": monthly_rows[-2:],
             "recent_months": monthly_rows[-3:],
         }
 
@@ -128,29 +126,6 @@ class AIContextBuilder:
             "Latest month profit margin vs baseline: "
             f"{delta} {direction} baseline, which is a {delta} {movement}."
         )
-
-    @staticmethod
-    def last_two_month_lines(monthly_rows):
-        if not monthly_rows:
-            return []
-
-        lines = ["Last two monthly data rows:"]
-        for row in monthly_rows:
-            lines.append(
-                f"- {row['Month']}: "
-                f"revenue {DisplayFormatter.money(row['Revenue'])}, "
-                f"net income {DisplayFormatter.money(row['Profit'])}, "
-                f"gross profit {DisplayFormatter.money(row['Gross Profit'])}, "
-                f"shipping {DisplayFormatter.money(row['Shipping Costs'])}, "
-                f"payroll {DisplayFormatter.money(row['Staff Payroll'])}, "
-                f"health insurance "
-                f"{DisplayFormatter.money(row['Health Insurance'])}, "
-                f"break-even {DisplayFormatter.money(row['Break Even Margin'])}, "
-                f"taxes {DisplayFormatter.money(row['Taxes'])}, "
-                f"orders {row['Orders']:,d}."
-            )
-
-        return lines
 
     @staticmethod
     def recent_month_lines(recent_months):

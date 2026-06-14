@@ -22,7 +22,6 @@ class RAGResultTest(unittest.TestCase):
         self.assertIn("Data Access Contract", content)
         self.assertIn("latest month revenue", content)
         self.assertIn("MoM revenue change", content)
-        self.assertIn("last two monthly data rows", content)
 
     def test_references(self):
         result = RAGResult(
