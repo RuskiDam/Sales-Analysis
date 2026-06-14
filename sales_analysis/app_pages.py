@@ -48,6 +48,15 @@ class BasePage:
         return None
 
     def load_inventory_rows(self, file_path, label):
+        """
+        Load inventory data from the given file path.
+        
+        Parameters:
+        	label (str): Label used in error messages if loading fails.
+        
+        Returns:
+        	list or None: List of inventory rows, or `None` if loading fails.
+        """
         try:
             return self.data_store.load_inventory_rows(file_path)
         except FileNotFoundError:
@@ -60,6 +69,12 @@ class BasePage:
         return None
 
     def show_metric_grid(self, metrics, columns_per_row=3):
+        """
+        Displays metrics arranged in a multi-column grid layout.
+        
+        Parameters:
+        	metrics (list): List of metric dictionaries, each containing 'label' and 'value' keys, and optionally 'delta' and 'delta_color'.
+        """
         for start in range(0, len(metrics), columns_per_row):
             columns = st.columns(columns_per_row)
             row_metrics = metrics[start:start + columns_per_row]
@@ -74,7 +89,9 @@ class BasePage:
                     )
 
     def show_finance_sheet(self, finance):
-        """Render company deductions with status styling for financial health."""
+        """
+        Display company financial deductions with color-coded status indicators.
+        """
 
         st.subheader("Company Deductions")
         styled_finance = self.finance_frame(finance).style.map(
@@ -93,6 +110,15 @@ class BasePage:
         )
 
     def finance_frame(self, finance):
+        """
+        Build a formatted dataframe for finance summary data.
+        
+        Parameters:
+            finance (dict): Finance summary data.
+        
+        Returns:
+            pd.DataFrame: Dataframe with "Datatype", "Value", and "Status" columns, with monetary values formatted as currency.
+        """
         rows = self.finance_rows(finance)
         frame = pd.DataFrame(rows, columns=["Datatype", "Value", "Status"])
         frame = frame.round(2)
@@ -100,6 +126,17 @@ class BasePage:
         return frame
 
     def finance_rows(self, finance):
+        """
+        Constructs financial statement rows from a finance dictionary.
+        
+        Produces tuples of (label, amount, status) for staff payroll, health insurance, taxes, break-even margin, and net income. The net income status is computed dynamically by comparing it against the break-even margin.
+        
+        Parameters:
+        	finance (dict): A dictionary containing keys: staff_payroll, health_insurance, taxes, break_even_margin, and net_income.
+        
+        Returns:
+        	list: A list of tuples, each containing a label string, a numeric value, and a status string.
+        """
         return [
             ("Staff Payroll", finance["staff_payroll"], "↓ Negative"),
             ("Health Insurance", finance["health_insurance"], "↓ Negative"),
@@ -116,6 +153,16 @@ class BasePage:
         ]
 
     def status_label(self, value, target):
+        """
+        Determine a status label by comparing a value to a target.
+        
+        Parameters:
+        	value: The value to evaluate
+        	target: The target value to compare against
+        
+        Returns:
+        	str: "↑ Positive" if value exceeds target, "↓ Negative" if value is below target, "= Neutral" if they are equal
+        """
         if value > target:
             return "↑ Positive"
 
@@ -125,6 +172,15 @@ class BasePage:
         return "= Neutral"
 
     def status_style(self, value):
+        """
+        Generate CSS styling for status indicators based on their prefix character.
+        
+        Parameters:
+            value (str): A status string with a prefix character (↑, ↓, or =).
+        
+        Returns:
+            str: CSS style string, or an empty string if the prefix is unrecognized.
+        """
         if value.startswith("↑"):
             return (
                 "background-color: #dafbe1; color: #116329; "
@@ -146,12 +202,28 @@ class BasePage:
         return ""
 
     def delta_color(self, value, target):
+        """
+        Determine the visual styling for a metric's delta indicator.
+        
+        Parameters:
+            value: The current value.
+            target: The target or reference value.
+        
+        Returns:
+            str: "off" if the value equals the target, "normal" otherwise.
+        """
         if value == target:
             return "off"
 
         return "normal"
 
     def signed_delta(self, value, target, formatter=DisplayFormatter.percent):
+        """
+        Formats the signed difference between a value and a target.
+        
+        Returns:
+            A formatted string: `= Neutral` if value equals target, `+` prefixed if positive, or negative if less than target.
+        """
         if value == target:
             return "= Neutral"
 
@@ -162,6 +234,15 @@ class BasePage:
         return formatter(difference)
 
     def shipping_delta(self, value):
+        """
+        Format a shipping cost as a delta display.
+        
+        Parameters:
+            value: The shipping cost amount.
+        
+        Returns:
+            str: `"= Neutral"` if the shipping cost is zero, otherwise a negative money-formatted string.
+        """
         if value == 0:
             return "= Neutral"
 
@@ -770,6 +851,9 @@ class AIPage(BasePage):
         st.markdown("</div>", unsafe_allow_html=True)
 
     def show_header(self):
+        """
+        Render the AI chat page header with title, RAG document status indicator, and clear chat button.
+        """
         header_column, docs_column, clear_column = st.columns(
             [0.72, 0.14, 0.14]
         )
@@ -784,10 +868,16 @@ class AIPage(BasePage):
                 st.rerun()
 
     def ensure_ai_messages(self):
+        """
+        Initialize the AI messages list in session state if not already present.
+        """
         if "ai_messages" not in st.session_state:
             st.session_state.ai_messages = []
 
     def show_ai_empty_state(self):
+        """
+        Display an empty state prompt for the AI chat interface.
+        """
         st.markdown(
             """
             <div class="ai-empty-state">
@@ -798,6 +888,9 @@ class AIPage(BasePage):
         )
 
     def show_ai_chat_history(self):
+        """
+        Display the conversation history from session state.
+        """
         for message in st.session_state.ai_messages:
             with st.chat_message(message["role"]):
                 st.write(message["content"])
@@ -806,6 +899,9 @@ class AIPage(BasePage):
                     self.show_references(references)
 
     def show_rag_document_status(self):
+        """
+        Display a button to view available RAG documents.
+        """
         rows = self.rag_document_rows()
         button_pressed = st.button("RAG", use_container_width=True)
         if button_pressed:
@@ -814,6 +910,12 @@ class AIPage(BasePage):
     @staticmethod
     @st.cache_data
     def rag_document_rows():
+        """
+        Extract metadata for documents in the RAG corpus.
+        
+        Returns:
+            list: A list of dicts containing document source name and size in kilobytes.
+        """
         return [
             {
                 "Document": source["source"],
@@ -823,6 +925,12 @@ class AIPage(BasePage):
         ]
 
     def show_references(self, references):
+        """
+        Display references as a dataframe.
+        
+        Parameters:
+            references: A list of reference dictionaries.
+        """
         st.caption("References")
         st.dataframe(
             pd.DataFrame(references),
@@ -831,7 +939,11 @@ class AIPage(BasePage):
         )
 
     def handle_ai_prompt(self, prompt):
-        """Append user prompt, call A.I. service, and persist assistant response."""
+        """
+        Process a user prompt through the AI service and display the conversation in chat history.
+        
+        Sends the prompt to the LLM service with prior chat context, renders both the user message and assistant response in the chat interface, displays any document references, and stores the exchange in session state.
+        """
 
         client = LLMClient()
         model = client.model or ""
@@ -854,6 +966,12 @@ class AIPage(BasePage):
         )
 
     def append_ai_message(self, role, content, references=None):
+        """
+        Appends a message to the AI chat history stored in session state.
+        
+        Parameters:
+            references (list, optional): Document references associated with the message.
+        """
         message = {"role": role, "content": content}
         if references:
             message["references"] = references

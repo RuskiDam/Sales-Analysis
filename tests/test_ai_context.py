@@ -29,6 +29,19 @@ class FakeMetrics:
         return 0.0
 
     def latest_month_report(self, sales_rows, finance_policy):
+        """
+        Return the latest month financial report.
+        
+        Returns:
+            dict: A dictionary containing the latest month's financial data with keys:
+                - year (int): The year
+                - month (int): The month number
+                - current_revenue (float): Current month revenue
+                - previous_revenue (float): Previous month revenue
+                - profit_margin (float): Profit margin percentage
+                - revenue_growth (float): Revenue growth rate
+                - finance (dict): Nested dictionary with net_income and break_even_margin
+        """
         return {
             "year": 2026,
             "month": 6,

@@ -78,6 +78,17 @@ class AIContextBuilder:
         ]
 
     def latest_month_lines(self, latest_report):
+        """
+        Generates formatted strings describing the latest month's financial performance.
+        
+        Parameters:
+            latest_report (dict): Dictionary containing latest month financial metrics. 
+                                  If falsy, returns an empty list.
+        
+        Returns:
+            list: Strings describing revenue, profit margin, and month-over-month changes 
+                  for the latest month.
+        """
         if not latest_report:
             return []
 
@@ -115,6 +126,16 @@ class AIContextBuilder:
 
     @staticmethod
     def profit_margin_baseline_line(margin_delta):
+        """
+        Generate a comparison string for profit margin relative to baseline.
+        
+        Parameters:
+            margin_delta (float): The difference between current profit margin and baseline.
+        
+        Returns:
+            line (str): A sentence describing whether profit margin is above or below baseline
+                        and whether this represents an increase or decrease.
+        """
         direction = "above"
         movement = "increase"
         if margin_delta < 0:
@@ -129,6 +150,15 @@ class AIContextBuilder:
 
     @staticmethod
     def recent_month_lines(recent_months):
+        """
+        Format recent monthly financial data into display lines.
+        
+        Parameters:
+        	recent_months: Sequence of monthly records with 'Month', 'Revenue', 'Profit', and 'Orders' keys.
+        
+        Returns:
+        	list: Formatted strings with a header and one line per month.
+        """
         if not recent_months:
             return []
 

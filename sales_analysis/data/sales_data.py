@@ -82,6 +82,12 @@ class SalesDataStore:
     sales_fields = ["item", "quant", "revenue", "shipping_cost"]
 
     def load_inventory_rows(self, file_path):
+        """
+        Load inventory data from a file and return standardized rows for each product.
+        
+        Returns:
+            A list of standardized inventory row dicts.
+        """
         data = self.load_inventory_data(file_path)
         return [
             self.inventory_row(product)
@@ -89,6 +95,12 @@ class SalesDataStore:
         ]
 
     def inventory_row(self, product):
+        """
+        Build a standardized inventory row from a product.
+        
+        Returns:
+            dict: A dict with keys Category, Item, Price, Quantity, and Available.
+        """
         return {
             "Category": product["category"],
             "Item": product["item"],
@@ -98,22 +110,56 @@ class SalesDataStore:
         }
 
     def load_inventory_data(self, file_path):
+        """
+        Load and validate inventory data from a JSON file.
+        
+        Parameters:
+            file_path (str): Path to the inventory JSON file.
+        
+        Returns:
+            dict: The validated inventory data structure.
+        
+        Raises:
+            ValueError: If the inventory data structure is invalid.
+        """
         data = json.loads(ProjectPaths.resolve(file_path).read_text())
         self.validate_inventory_data(data)
         return data
 
     def save_inventory_data(self, file_path, data):
+        """
+        Write validated inventory data to a JSON file.
+        
+        Raises:
+            ValueError: If the inventory data fails validation
+        """
         self.validate_inventory_data(data)
         ProjectPaths.resolve(file_path).write_text(
             json.dumps(data, indent=self.json_indent) + "\n"
         )
 
     def load_sales_rows(self, file_path):
+        """
+        Load sales rows from a JSON file.
+        
+        Parameters:
+        	file_path (str): Path to the JSON file containing sales rows.
+        
+        Returns:
+        	list: A list of validated sales row dictionaries.
+        """
         rows = json.loads(ProjectPaths.resolve(file_path).read_text())
         self.validate_sales_rows(rows)
         return rows
 
     def save_sales_rows(self, file_path, rows):
+        """
+        Save sales rows to a JSON file.
+        
+        Parameters:
+            file_path (str): Path where the sales data will be saved.
+            rows (list): Sales row dictionaries to persist.
+        """
         self.validate_sales_rows(rows)
         ProjectPaths.resolve(file_path).write_text(
             json.dumps(rows, indent=self.json_indent) + "\n"
@@ -193,10 +239,24 @@ class SalesMetrics:
 
     @staticmethod
     def shipping_costs(sales_rows):
+        """
+        Calculate the total shipping costs across sales rows.
+        
+        Returns:
+            The sum of all shipping costs.
+        """
         return sum(row["shipping_cost"] for row in sales_rows)
 
     @classmethod
     def profit_margin(cls, profit, revenue):
+        """
+        Calculate profit margin as a percentage.
+        
+        Returns 0.0 if revenue is zero.
+        
+        Returns:
+        	float: The profit margin as a percentage
+        """
         if revenue == 0:
             return 0.0
 
@@ -204,6 +264,16 @@ class SalesMetrics:
 
     @classmethod
     def mom_revenue_growth(cls, current_revenue, previous_revenue):
+        """
+        Calculate the month-over-month revenue growth percentage.
+        
+        Parameters:
+            current_revenue (float): Revenue for the current month
+            previous_revenue (float): Revenue for the previous month
+        
+        Returns:
+            float: The percentage growth from previous to current revenue, or 0.0 if previous revenue is zero
+        """
         if previous_revenue == 0:
             return 0.0
 
@@ -350,6 +420,18 @@ class SalesMetrics:
 
     @staticmethod
     def report_summary(year, month, current_sales, values):
+        """
+        Build a financial summary dictionary for a given month.
+        
+        Parameters:
+            year (int): The year
+            month (int): The month (1-12)
+            current_sales (list): Sales records for this month
+            values (dict): Computed values including current_revenue, previous_revenue, shipping_costs, and finance
+        
+        Returns:
+            dict: A summary containing year, month, current_sales, current_revenue, previous_revenue, shipping_costs, and finance
+        """
         return {
             "year": year,
             "month": month,
