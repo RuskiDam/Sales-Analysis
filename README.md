@@ -133,13 +133,18 @@ Current runtime context includes:
 ```mermaid
 flowchart TD
     User[User] --> UI[Streamlit UI]
-    UI --> Pages[Calculator, Inventory, Analysis, A.I. pages]
+    UI --> Calculator[Calculator]
+    UI --> Inventory[Inventory]
+    UI --> Analysis[Analysis]
+    UI --> AIPage[A.I.]
 
-    Pages --> Data[Simulation JSON and sales data store]
+    Calculator --> Data[Simulation JSON and sales data store]
+    Inventory --> Data
+    Analysis --> Data
     Data --> Metrics[Sales and finance metrics]
     Metrics --> Dashboard[Dashboard tables, charts, and reports]
 
-    Pages --> AI[A.I. service]
+    AIPage --> AI[A.I. service]
     AI --> Context[Current app context]
     AI --> Corpus[docs/ corpus]
     Context --> Prompt[Grounded prompt]
@@ -148,7 +153,8 @@ flowchart TD
     OpenAI --> Response[A.I. answer and document references]
     Response --> UI
 
-    Pages --> Logs[JSONL action logs]
+    Calculator --> Logs[JSONL action logs]
+    AIPage --> Logs
 ```
 
 Main modules:
