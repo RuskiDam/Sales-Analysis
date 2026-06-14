@@ -117,7 +117,7 @@ OPENAI_API_KEY=your_api_key_here
 OPENAI_API_URL=https://api.openai.com/v1/chat/completions
 OPENAI_MODEL=gpt-5.5
 OPENAI_TIMEOUT_SECONDS=30
-OPENAI_MAX_TOKENS=800
+OPENAI_MAX_TOKENS=1200
 ```
 
 The `.env` file is ignored by Git and should not be committed.
@@ -157,7 +157,7 @@ OPENAI_API_KEY = "your_api_key_here"
 OPENAI_API_URL = "https://api.openai.com/v1/chat/completions"
 OPENAI_MODEL = "gpt-5.5"
 OPENAI_TIMEOUT_SECONDS = "30"
-OPENAI_MAX_TOKENS = "800"
+OPENAI_MAX_TOKENS = "1200"
 ```
 
 5. Deploy the app.

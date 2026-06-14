@@ -59,6 +59,7 @@ class LLMClient:
     model_env = "OPENAI_MODEL"
     timeout_env = "OPENAI_TIMEOUT_SECONDS"
     max_tokens_env = "OPENAI_MAX_TOKENS"
+    minimum_completion_tokens = 1200
 
     def __init__(self, api_key="", endpoint="", model=""):
         EnvironmentLoader().load()
@@ -102,6 +103,8 @@ class LLMClient:
         if self.max_tokens is None:
             self.max_tokens = self.response_token_limit()
 
+        self.max_tokens = max(self.max_tokens, self.minimum_completion_tokens)
+
     def request(self, prompt):
         return urllib.request.Request(
             self.endpoint,
@@ -137,7 +140,11 @@ class LLMClient:
             "messages": [
                 {
                     "role": "system",
-                    "content": "You are a concise sales analytics assistant.",
+                    "content": (
+                        "You are a concise sales analytics assistant. "
+                        "Answer in at most 80 words, using no more than 3 "
+                        "bullets. No preamble."
+                    ),
                 },
                 {"role": "user", "content": prompt},
             ],
@@ -147,10 +154,28 @@ class LLMClient:
     def response_text(data):
         message = data["choices"][0]["message"]
         content = message.get("content")
-        if content:
+        if isinstance(content, str) and content.strip():
             return content
 
-        raise ValueError("OpenAI response did not include answer text.")
+        if isinstance(content, list):
+            text_parts = [
+                item.get("text", "")
+                for item in content
+                if isinstance(item, dict)
+            ]
+            text = "".join(text_parts).strip()
+            if text:
+                return text
+
+        finish_reason = data["choices"][0].get("finish_reason")
+        if finish_reason == "length":
+            raise ValueError(
+                "OpenAI returned no visible answer text because the completion "
+                "token limit was exhausted. Increase OPENAI_MAX_TOKENS in "
+                "Streamlit secrets."
+            )
+
+        raise ValueError("OpenAI response did not include visible answer text.")
 
     @classmethod
     def timeout(cls):

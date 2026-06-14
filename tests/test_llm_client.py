@@ -76,11 +76,42 @@ class LLMClientTest(unittest.TestCase):
             endpoint=self.test_endpoint,
             model=self.test_model,
         )
+        client.ensure_request_limits()
         payload = client.payload("What is revenue?")
         self.assertEqual(payload["model"], self.test_model)
-        self.assertEqual(payload["max_completion_tokens"], client.max_tokens)
+        self.assertEqual(payload["max_completion_tokens"], 1200)
         self.assertEqual(payload["stream"], False)
+        self.assertIn("at most 80 words", payload["messages"][0]["content"])
         self.assertEqual(payload["messages"][1]["content"], "What is revenue?")
+
+    def test_structured_content_returns_text(self):
+        data = {
+            "choices": [
+                {
+                    "message": {
+                        "content": [
+                            {"type": "text", "text": "Revenue increased."}
+                        ]
+                    }
+                }
+            ]
+        }
+        self.assertEqual(
+            LLMClient.response_text(data),
+            "Revenue increased.",
+        )
+
+    def test_empty_length_response_explains_token_limit(self):
+        data = {
+            "choices": [
+                {
+                    "finish_reason": "length",
+                    "message": {"content": ""},
+                }
+            ]
+        }
+        with self.assertRaisesRegex(ValueError, "token limit was exhausted"):
+            LLMClient.response_text(data)
 
     def test_timeout_error(self):
         client = self.client(
