@@ -4,11 +4,3 @@ __pycache__/
 .env
 .streamlit/secrets.toml
 logs/
-agent.md
-CODEBASE.md
-CODEBASE.MD
-Main Project Requirements*
-Tests.md
-scaffold.md
-streamlit-ricing.md
-pyrightconfig.json
