@@ -1,6 +1,6 @@
 # Sales Analysis
 
-Sales Analysis A.I. is a Streamlit web app for a PC parts retailer. It combines
+Sales Analysis is a Streamlit web app for a PC parts retailer. It combines
 sales, inventory, simulation, finance metrics, and a guarded RAG-backed A.I.
 assistant in one dashboard.
 
